@@ -1,0 +1,156 @@
+import { ref, computed } from 'vue'
+import type { DashboardFilters, Neighborhood, Caseworker } from '@/types'
+import rawData from '@/data/mockData.json'
+import type { MockData } from '@/types'
+
+const data = rawData as MockData
+
+// ─── Default filter values ────────────────────────────────────────────────────
+const today = new Date('2026-04-13')
+
+function toYYYYMM(d: Date): string {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+}
+
+function defaultDateRange() {
+  const end = new Date(today)
+  const start = new Date(today)
+  start.setDate(start.getDate() - 29)
+  return { start: toYYYYMM(start), end: toYYYYMM(end) }
+}
+
+export function useDashboardData() {
+  const filters = ref<DashboardFilters>({
+    neighborhoods: [...data.metadata.neighborhoods] as Neighborhood[],
+    caseworkers: [...data.metadata.caseworkers] as Caseworker[],
+    dateRange: defaultDateRange(),
+  })
+
+  function resetFilters() {
+    filters.value = {
+      neighborhoods: [...data.metadata.neighborhoods] as Neighborhood[],
+      caseworkers: [...data.metadata.caseworkers] as Caseworker[],
+      dateRange: defaultDateRange(),
+    }
+  }
+
+  // Apply neighborhood + caseworker filters (date range applied per metric)
+  const filteredClients = computed(() =>
+    data.clients.filter(
+      (c) =>
+        filters.value.neighborhoods.includes(c.neighborhood) &&
+        filters.value.caseworkers.includes(c.assignedCaseworker),
+    ),
+  )
+
+  const activeClients = computed(() =>
+    filteredClients.value.filter((c) => c.clientStatus === 'active'),
+  )
+
+  const waitlistedClients = computed(() =>
+    filteredClients.value.filter((c) => c.clientStatus === 'waitlisted'),
+  )
+
+  // ── Action Needed ────────────────────────────────────────────────────────────
+
+  const notContactedIn30Days = computed(() =>
+    activeClients.value.filter((c) => {
+      const lastContact = new Date(c.lastContactDate)
+      const diffMs = today.getTime() - lastContact.getTime()
+      return diffMs >= 30 * 24 * 60 * 60 * 1000
+    }),
+  )
+
+  const medicaidExpiringIn30Days = computed(() =>
+    filteredClients.value.filter((c) => {
+      if (c.clientStatus === 'closed') return false
+      const exp = new Date(c.medicaidExpirationDate)
+      const diffMs = exp.getTime() - today.getTime()
+      return diffMs >= 0 && diffMs <= 30 * 24 * 60 * 60 * 1000
+    }),
+  )
+
+  // ── Summary metrics ──────────────────────────────────────────────────────────
+
+  const totalActiveCount = computed(() => activeClients.value.length)
+
+  const avgDaysToFirstAppointment = computed(() => {
+    const appointments = filteredClients.value.filter(
+      (c) => c.firstAppointmentDate !== null,
+    )
+    if (appointments.length === 0) return 0
+    const total = appointments.reduce((sum, c) => {
+      const ref = new Date(c.referralDate)
+      const appt = new Date(c.firstAppointmentDate as string)
+      return sum + Math.round((appt.getTime() - ref.getTime()) / (24 * 60 * 60 * 1000))
+    }, 0)
+    return Math.round(total / appointments.length)
+  })
+
+  // New referrals this calendar month (April 2026)
+  const currentMonthStr = toYYYYMM(today)
+  const newReferralsThisMonth = computed(() =>
+    filteredClients.value.filter(
+      (c) => c.referralDate.startsWith(currentMonthStr),
+    ).length,
+  )
+
+  // ── Chart data helpers ───────────────────────────────────────────────────────
+
+  const caseloadPerCaseworker = computed(() => {
+    const map: Record<string, number> = {}
+    for (const cw of data.metadata.caseworkers) {
+      map[cw] = activeClients.value.filter((c) => c.assignedCaseworker === cw).length
+    }
+    return map
+  })
+
+  const referralsByNeighborhood = computed(() => {
+    const map: Record<string, number> = {}
+    for (const n of filters.value.neighborhoods) {
+      map[n] = filteredClients.value.filter((c) => c.neighborhood === n).length
+    }
+    return map
+  })
+
+  const sitesByIndividualsServed = computed(() => {
+    const map: Record<string, number> = {}
+    for (const c of activeClients.value) {
+      map[c.site] = (map[c.site] ?? 0) + 1
+    }
+    return Object.entries(map)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10)
+  })
+
+  const careNeedsByNeighborhood = computed(() => {
+    const result: Record<string, Record<string, number>> = {}
+    for (const n of filters.value.neighborhoods) {
+      result[n] = {}
+      for (const ct of data.metadata.careTypes) {
+        result[n][ct] = filteredClients.value.filter(
+          (c) => c.neighborhood === n && c.careTypeNeeded === ct,
+        ).length
+      }
+    }
+    return result
+  })
+
+  return {
+    data,
+    filters,
+    resetFilters,
+    filteredClients,
+    activeClients,
+    waitlistedClients,
+    notContactedIn30Days,
+    medicaidExpiringIn30Days,
+    totalActiveCount,
+    avgDaysToFirstAppointment,
+    newReferralsThisMonth,
+    caseloadPerCaseworker,
+    referralsByNeighborhood,
+    sitesByIndividualsServed,
+    careNeedsByNeighborhood,
+  }
+}

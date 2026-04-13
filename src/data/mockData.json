@@ -26,81 +26,21 @@
       "Case Management"
     ],
     "sites": [
-      {
-        "name": "Kensington Community Health Center",
-        "neighborhood": "Kensington",
-        "caseworkers": ["Elly"]
-      },
-      {
-        "name": "Rising Sun Community Partners",
-        "neighborhood": "Kensington",
-        "caseworkers": ["Elly"]
-      },
-      {
-        "name": "North Philly Behavioral Health Associates",
-        "neighborhood": "North Philadelphia",
-        "caseworkers": ["Kirsten"]
-      },
-      {
-        "name": "West Philadelphia Wellness Clinic",
-        "neighborhood": "West Philadelphia",
-        "caseworkers": ["Orien"]
-      },
-      {
-        "name": "Fairmount Counseling Center",
-        "neighborhood": "West Philadelphia",
-        "caseworkers": ["Orien"]
-      },
-      {
-        "name": "Broad Street Health Collaborative",
-        "neighborhood": "North Philadelphia",
-        "caseworkers": ["Elly"]
-      },
-      {
-        "name": "Center City Mental Health Institute",
-        "neighborhood": "Center City",
-        "caseworkers": ["Orien"]
-      },
-      {
-        "name": "Fishtown Family Services",
-        "neighborhood": "North Philadelphia",
-        "caseworkers": ["Kirsten"]
-      },
-      {
-        "name": "Temple Hill Outpatient Center",
-        "neighborhood": "North Philadelphia",
-        "caseworkers": ["Kirsten"]
-      },
-      {
-        "name": "South Philly Recovery and Support Services",
-        "neighborhood": "South Philadelphia",
-        "caseworkers": ["Mac"]
-      },
-      {
-        "name": "Unity Recovery Services",
-        "neighborhood": "South Philadelphia",
-        "caseworkers": ["Mac"]
-      },
-      {
-        "name": "Passyunk Avenue Psychiatric Services",
-        "neighborhood": "South Philadelphia",
-        "caseworkers": ["Mac"]
-      },
-      {
-        "name": "Germantown Holistic Behavioral Health",
-        "neighborhood": "Germantown",
-        "caseworkers": ["Charlotte"]
-      },
-      {
-        "name": "Chelten Avenue Community Clinic",
-        "neighborhood": "Germantown",
-        "caseworkers": ["Charlotte"]
-      },
-      {
-        "name": "Logan Square Behavioral Health",
-        "neighborhood": "Center City",
-        "caseworkers": ["Charlotte"]
-      }
+      { "name": "Kensington Community Health Center", "neighborhood": "Kensington", "caseworkers": ["Elly"] },
+      { "name": "Rising Sun Community Partners", "neighborhood": "Kensington", "caseworkers": ["Elly"] },
+      { "name": "North Philly Behavioral Health Associates", "neighborhood": "North Philadelphia", "caseworkers": ["Kirsten"] },
+      { "name": "West Philadelphia Wellness Clinic", "neighborhood": "West Philadelphia", "caseworkers": ["Orien"] },
+      { "name": "Fairmount Counseling Center", "neighborhood": "West Philadelphia", "caseworkers": ["Orien"] },
+      { "name": "Broad Street Health Collaborative", "neighborhood": "North Philadelphia", "caseworkers": ["Elly"] },
+      { "name": "Center City Mental Health Institute", "neighborhood": "Center City", "caseworkers": ["Orien"] },
+      { "name": "Fishtown Family Services", "neighborhood": "North Philadelphia", "caseworkers": ["Kirsten"] },
+      { "name": "Temple Hill Outpatient Center", "neighborhood": "North Philadelphia", "caseworkers": ["Kirsten"] },
+      { "name": "South Philly Recovery and Support Services", "neighborhood": "South Philadelphia", "caseworkers": ["Mac"] },
+      { "name": "Unity Recovery Services", "neighborhood": "South Philadelphia", "caseworkers": ["Mac"] },
+      { "name": "Passyunk Avenue Psychiatric Services", "neighborhood": "South Philadelphia", "caseworkers": ["Mac"] },
+      { "name": "Germantown Holistic Behavioral Health", "neighborhood": "Germantown", "caseworkers": ["Charlotte"] },
+      { "name": "Chelten Avenue Community Clinic", "neighborhood": "Germantown", "caseworkers": ["Charlotte"] },
+      { "name": "Logan Square Behavioral Health", "neighborhood": "Center City", "caseworkers": ["Charlotte"] }
     ]
   },
   "priorMonthSnapshot": {
