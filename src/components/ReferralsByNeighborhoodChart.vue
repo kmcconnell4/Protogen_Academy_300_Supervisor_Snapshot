@@ -1,12 +1,18 @@
 <template>
-  <v-card class="pa-4 fill-height">
-    <div class="text-h6 font-weight-semibold mb-4">Referrals by Neighborhood</div>
-    <Bar
-      :data="chartData"
-      :options="chartOptions"
-      aria-label="Horizontal bar chart showing total referrals by neighborhood"
-      role="img"
-    />
+  <v-card class="chart-card fill-height" :elevation="0">
+    <div class="chart-card__header">
+      <div class="chart-card__title">Referrals by Neighborhood</div>
+      <div class="chart-card__subtitle">All referral statuses</div>
+    </div>
+    <div class="chart-wrap" style="height: 280px">
+      <Bar
+        :data="chartData"
+        :options="chartOptions"
+        aria-label="Horizontal bar chart: total referrals by neighborhood"
+        role="img"
+        :aria-description="ariaDescription"
+      />
+    </div>
   </v-card>
 </template>
 
@@ -30,13 +36,18 @@ const props = defineProps<{
   data: Record<string, number>
 }>()
 
+const sortedEntries = computed(() =>
+  Object.entries(props.data).sort((a, b) => b[1] - a[1]),
+)
+
 const chartData = computed(() => ({
-  labels: Object.keys(props.data),
+  labels: sortedEntries.value.map(([n]) => n),
   datasets: [
     {
       label: 'Referrals',
-      data: Object.values(props.data),
+      data: sortedEntries.value.map(([, v]) => v),
       backgroundColor: '#6b297d',
+      hoverBackgroundColor: '#6a0c7d',
       borderRadius: 4,
     },
   ],
@@ -45,9 +56,13 @@ const chartData = computed(() => ({
 const chartOptions = {
   indexAxis: 'y' as const,
   responsive: true,
+  maintainAspectRatio: false,
   plugins: {
     legend: { display: false },
     tooltip: {
+      backgroundColor: '#212121',
+      padding: 10,
+      cornerRadius: 8,
       callbacks: {
         label: (ctx: TooltipItem<'bar'>) => ` ${ctx.parsed.x ?? 0} referrals`,
       },
@@ -56,8 +71,46 @@ const chartOptions = {
   scales: {
     x: {
       beginAtZero: true,
-      ticks: { stepSize: 1 },
+      ticks: { stepSize: 1, color: '#757575' },
+      grid: { color: '#f0f0f0' },
+    },
+    y: {
+      ticks: { color: '#212121', font: { size: 11 } },
+      grid: { display: false },
     },
   },
 }
+
+const ariaDescription = computed(() =>
+  sortedEntries.value.map(([n, v]) => `${n}: ${v}`).join(', '),
+)
 </script>
+
+<style scoped>
+.chart-card {
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  overflow: hidden;
+}
+
+.chart-card__header {
+  padding: 20px 22px 12px;
+}
+
+.chart-card__title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #212121;
+}
+
+.chart-card__subtitle {
+  font-size: 0.75rem;
+  color: #757575;
+  margin-top: 2px;
+}
+
+.chart-wrap {
+  padding: 4px 16px 20px;
+}
+</style>

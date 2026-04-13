@@ -1,48 +1,81 @@
 <template>
-  <v-container fluid class="pa-4 pa-md-6">
-    <!-- Header -->
+  <v-container fluid class="dashboard-container pa-4 pa-md-6 pa-lg-8">
+    <!-- ── Header ──────────────────────────────────────────────────────── -->
     <DashboardHeader />
 
-    <!-- Global Filters -->
+    <!-- ── Global Filters ─────────────────────────────────────────────── -->
     <GlobalFilters
       v-model:filters="filters"
       :metadata="data.metadata"
       @reset="resetFilters"
     />
 
-    <!-- 🔴 Action Needed Row -->
-    <ActionNeededRow
-      :not-contacted="notContactedIn30Days"
-      :medicaid-expiring="medicaidExpiringIn30Days"
-      :waitlisted="waitlistedClients"
-      :prior-waitlist-count="data.priorMonthSnapshot.waitlistCount"
-    />
+    <!-- ── 🔴 Action Needed ────────────────────────────────────────────── -->
+    <section aria-labelledby="action-needed-heading" class="mb-2">
+      <h2 id="action-needed-heading" class="section-label mb-3">
+        <v-icon color="error" size="18" class="mr-1">mdi-alert-circle</v-icon>
+        Action Needed
+      </h2>
+      <ActionNeededRow
+        :not-contacted="notContactedIn30Days"
+        :medicaid-expiring="medicaidExpiringIn30Days"
+        :waitlisted="waitlistedClients"
+        :prior-waitlist-count="data.priorMonthSnapshot.waitlistCount"
+      />
+    </section>
 
-    <!-- 🟡🟢 Summary Row -->
-    <SummaryRow
-      :total-active="totalActiveCount"
-      :avg-days-to-appt="avgDaysToFirstAppointment"
-      :new-referrals="newReferralsThisMonth"
-      :prior-active="data.priorMonthSnapshot.totalActiveClients"
-      :prior-avg-days="data.priorMonthSnapshot.avgDaysToFirstAppointment"
-      :prior-referrals="data.priorMonthSnapshot.newReferrals"
-    />
+    <!-- ── 🟡🟢 Summary Metrics ─────────────────────────────────────────── -->
+    <section aria-labelledby="summary-heading" class="mb-2">
+      <h2 id="summary-heading" class="section-label mb-3">
+        <v-icon color="success" size="18" class="mr-1">mdi-chart-line</v-icon>
+        Big Picture
+      </h2>
+      <SummaryRow
+        :total-active="totalActiveCount"
+        :avg-days-to-appt="avgDaysToFirstAppointment"
+        :new-referrals="newReferralsThisMonth"
+        :prior-active="data.priorMonthSnapshot.totalActiveClients"
+        :prior-avg-days="data.priorMonthSnapshot.avgDaysToFirstAppointment"
+        :prior-referrals="data.priorMonthSnapshot.newReferrals"
+      />
+    </section>
 
-    <!-- 🟡 Caseload Bar Chart -->
-    <CaseloadChart :caseload="caseloadPerCaseworker" />
+    <!-- ── 🟡 Caseload Chart ───────────────────────────────────────────── -->
+    <section aria-labelledby="caseload-heading" class="mb-2">
+      <h2 id="caseload-heading" class="section-label mb-3">
+        <v-icon color="warning" size="18" class="mr-1">mdi-account-group</v-icon>
+        Team Capacity
+      </h2>
+      <CaseloadChart :caseload="caseloadPerCaseworker" />
+    </section>
 
-    <!-- 2-col row: Referrals by Neighborhood + Care Needs -->
-    <v-row>
-      <v-col cols="12" md="4">
-        <ReferralsByNeighborhoodChart :data="referralsByNeighborhood" />
-      </v-col>
-      <v-col cols="12" md="8">
-        <CareNeedsByNeighborhoodChart :data="careNeedsByNeighborhood" :care-types="data.metadata.careTypes" />
-      </v-col>
-    </v-row>
+    <!-- ── Charts Row ─────────────────────────────────────────────────── -->
+    <section aria-labelledby="charts-heading" class="mb-2">
+      <h2 id="charts-heading" class="section-label mb-3">
+        <v-icon color="primary" size="18" class="mr-1">mdi-chart-bar</v-icon>
+        Community Insights
+      </h2>
+      <v-row>
+        <v-col cols="12" md="4">
+          <ReferralsByNeighborhoodChart :data="referralsByNeighborhood" />
+        </v-col>
+        <v-col cols="12" md="8">
+          <CareNeedsByNeighborhoodChart
+            :data="careNeedsByNeighborhood"
+            :care-types="data.metadata.careTypes"
+          />
+        </v-col>
+      </v-row>
+    </section>
 
-    <!-- Sites/Providers Chart -->
-    <SitesChart :data="sitesByIndividualsServed" />
+    <!-- ── Sites Chart ────────────────────────────────────────────────── -->
+    <section aria-labelledby="sites-heading" class="mb-6">
+      <h2 id="sites-heading" class="section-label mb-3">
+        <v-icon color="primary" size="18" class="mr-1">mdi-hospital-building</v-icon>
+        Sites &amp; Providers
+      </h2>
+      <SitesChart :data="sitesByIndividualsServed" />
+    </section>
   </v-container>
 </template>
 
@@ -73,3 +106,21 @@ const {
   careNeedsByNeighborhood,
 } = useDashboardData()
 </script>
+
+<style scoped>
+.dashboard-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.section-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #212121;
+  opacity: 0.5;
+  display: flex;
+  align-items: center;
+}
+</style>

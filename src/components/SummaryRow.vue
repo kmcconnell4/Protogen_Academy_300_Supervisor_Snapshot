@@ -1,5 +1,5 @@
 <template>
-  <v-row class="mb-6">
+  <v-row class="mb-6" align="stretch">
     <v-col cols="12" sm="4">
       <MetricTile
         label="Total Individuals Actively Served"
