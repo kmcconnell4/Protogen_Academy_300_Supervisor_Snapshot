@@ -15,7 +15,8 @@ function toYYYYMM(d: Date): string {
 function defaultDateRange() {
   const end = new Date(today)
   const start = new Date(today)
-  start.setDate(start.getDate() - 29)
+  start.setFullYear(start.getFullYear() - 1)
+  start.setDate(1) // ensure we're at the start of that month
   return { start: toYYYYMM(start), end: toYYYYMM(end) }
 }
 

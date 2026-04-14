@@ -167,6 +167,9 @@ const trendClass = computed(() => (isPositive.value ? 'trend--positive' : 'trend
 /* ── Compact layout ──────────────────────────────────────── */
 .metric-tile--compact {
   border-radius: 10px;
+  min-height: 88px;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .metric-tile--compact .metric-tile__accent {

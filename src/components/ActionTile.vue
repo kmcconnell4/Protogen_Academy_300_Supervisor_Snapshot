@@ -186,6 +186,9 @@ const iconBg = computed(() => `${accentColor.value}18`) // 10% opacity
 /* ── Compact layout ──────────────────────────────────────── */
 .action-tile--compact {
   border-radius: 10px;
+  min-height: 88px;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .action-tile--compact .action-tile__accent {

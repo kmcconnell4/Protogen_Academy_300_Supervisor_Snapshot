@@ -151,12 +151,6 @@
       Reset
     </button>
 
-    <!-- ── Active badge ─────────────────────────────────────────────── -->
-    <div v-if="activeFilterCount > 0" class="filter-active-badge" aria-live="polite">
-      <v-icon size="12" class="mr-1" aria-hidden="true">mdi-filter-check</v-icon>
-      {{ activeFilterCount }} active
-    </div>
-
   </div>
 </template>
 
