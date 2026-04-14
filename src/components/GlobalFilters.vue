@@ -271,13 +271,6 @@ const caseworkerLabel = computed(() => {
   if (caseworkers.length === 1) return caseworkers[0]
   return caseworkers.slice(0, 2).join(', ') + (caseworkers.length > 2 ? ` +${caseworkers.length - 2}` : '')
 })
-
-const activeFilterCount = computed(() => {
-  let count = 0
-  if (isNeighborhoodFiltered.value) count++
-  if (isCaseworkerFiltered.value) count++
-  return count
-})
 </script>
 
 <style scoped>
