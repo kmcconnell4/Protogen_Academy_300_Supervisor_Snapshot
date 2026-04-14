@@ -168,9 +168,13 @@ function onCaseworkerClick(caseworker: string) {
       { key: 'careTypeNeeded', label: 'Care Needed' },
       {
         key: 'lastContactDate',
-        label: 'Days Since Contact',
+        label: 'Last Contact',
         align: 'right',
-        badge: (c) => ({ text: `${daysSince(c.lastContactDate)}d`, variant: 'error' }),
+        badge: (c) => {
+          const d = daysSince(c.lastContactDate)
+          const variant = d < 20 ? 'success' : d < 30 ? 'warning' : 'error'
+          return { text: `${d}d`, variant }
+        },
       },
     ],
   })
@@ -185,7 +189,7 @@ function onSiteClick(site: string) {
       { key: 'clientName', label: 'Client' },
       { key: 'assignedCaseworker', label: 'Caseworker' },
       { key: 'careTypeNeeded', label: 'Care Needed' },
-      { key: 'clientStatus', label: 'Status' },
+      { key: 'clientStatus', label: 'Status', format: (c) => c.clientStatus.charAt(0).toUpperCase() + c.clientStatus.slice(1) },
     ],
   })
 }
@@ -200,12 +204,16 @@ function onCareNeedsClick({ neighborhood, careType }: { neighborhood: string; ca
     columns: [
       { key: 'clientName', label: 'Client' },
       { key: 'assignedCaseworker', label: 'Caseworker' },
-      { key: 'clientStatus', label: 'Status' },
+      { key: 'clientStatus', label: 'Status', format: (c) => c.clientStatus.charAt(0).toUpperCase() + c.clientStatus.slice(1) },
       {
         key: 'lastContactDate',
-        label: 'Days Since Contact',
+        label: 'Last Contact',
         align: 'right',
-        badge: (c) => ({ text: `${daysSince(c.lastContactDate)}d`, variant: 'error' }),
+        badge: (c) => {
+          const d = daysSince(c.lastContactDate)
+          const variant = d < 20 ? 'success' : d < 30 ? 'warning' : 'error'
+          return { text: `${d}d`, variant }
+        },
       },
     ],
   })
@@ -220,11 +228,7 @@ function onNeighborhoodClick(neighborhood: string) {
       { key: 'clientName', label: 'Client' },
       { key: 'assignedCaseworker', label: 'Caseworker' },
       { key: 'careTypeNeeded', label: 'Care Needed' },
-      {
-        key: 'referralDate',
-        label: 'Referral Date',
-        badge: (c) => ({ text: formatDate(c.referralDate), variant: 'success' }),
-      },
+      { key: 'referralDate', label: 'Referral Date', format: (c) => formatDate(c.referralDate) },
     ],
   })
 }

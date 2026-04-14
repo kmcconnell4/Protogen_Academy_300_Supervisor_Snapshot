@@ -58,6 +58,7 @@ export interface DrawerColumn {
   key: keyof Client
   label: string
   align?: 'left' | 'right'
+  format?: (c: Client) => string
   badge?: (c: Client) => { text: string; variant: BadgeVariant } | null
 }
 

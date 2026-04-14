@@ -91,9 +91,13 @@ const columnConfigs: Record<string, { title: string; icon: string; getClients: (
       { key: 'neighborhood', label: 'Neighborhood' },
       {
         key: 'lastContactDate',
-        label: 'Days Since',
+        label: 'Last Contact',
         align: 'right',
-        badge: (c) => ({ text: `${daysSince(c.lastContactDate)}d`, variant: 'error' }),
+        badge: (c) => {
+          const d = daysSince(c.lastContactDate)
+          const variant = d < 20 ? 'success' : d < 30 ? 'warning' : 'error'
+          return { text: `${d}d`, variant }
+        },
       },
     ],
   },
@@ -104,11 +108,7 @@ const columnConfigs: Record<string, { title: string; icon: string; getClients: (
     columns: [
       { key: 'clientName', label: 'Client' },
       { key: 'assignedCaseworker', label: 'Caseworker' },
-      {
-        key: 'medicaidExpirationDate',
-        label: 'Expires',
-        badge: (c) => ({ text: formatDate(c.medicaidExpirationDate), variant: 'warning' }),
-      },
+      { key: 'medicaidExpirationDate', label: 'Expires', format: (c) => formatDate(c.medicaidExpirationDate) },
       {
         key: 'medicaidExpirationDate',
         label: 'Days Left',

@@ -72,7 +72,7 @@
                     :class="`days-badge--${cellBadge(col, c)!.variant}`"
                   >{{ cellBadge(col, c)!.text }}</span>
                 </template>
-                <template v-else>{{ c[col.key] ?? '—' }}</template>
+                <template v-else>{{ col.format ? col.format(c) : (c[col.key] ?? '—') }}</template>
               </td>
             </tr>
             <tr v-if="clients.length === 0">
