@@ -106,7 +106,7 @@
           <v-chip
             v-if="isCaseworkerFiltered"
             size="x-small"
-            color="secondary"
+            color="primary"
             variant="flat"
             class="pill-count"
             aria-hidden="true"
