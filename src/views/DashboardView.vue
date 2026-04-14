@@ -51,7 +51,7 @@
       </h2>
       <v-row class="mb-6">
         <v-col cols="12" md="4">
-          <ReferralsByNeighborhoodChart :data="referralsByNeighborhood" />
+          <PhillyNeighborhoodMap :data="referralsByNeighborhood" />
         </v-col>
         <v-col cols="12" md="8">
           <CareNeedsByNeighborhoodChart
@@ -80,7 +80,7 @@ import GlobalFilters from '@/components/GlobalFilters.vue'
 import ActionNeededRow from '@/components/ActionNeededRow.vue'
 import SummaryRow from '@/components/SummaryRow.vue'
 import CaseloadChart from '@/components/CaseloadChart.vue'
-import ReferralsByNeighborhoodChart from '@/components/ReferralsByNeighborhoodChart.vue'
+import PhillyNeighborhoodMap from '@/components/PhillyNeighborhoodMap.vue'
 import CareNeedsByNeighborhoodChart from '@/components/CareNeedsByNeighborhoodChart.vue'
 import SitesChart from '@/components/SitesChart.vue'
 

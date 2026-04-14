@@ -3,7 +3,7 @@
     <div class="chart-card__header">
       <div>
         <div class="chart-card__title">Sites &amp; Providers Serving Most Individuals</div>
-        <div class="chart-card__subtitle">Active clients per site — responds to global filters</div>
+        <div class="chart-card__subtitle">Active clients per site</div>
       </div>
     </div>
     <div class="chart-wrap" :style="{ height: chartHeight }">

@@ -15,27 +15,6 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-
-// Dashboard is pinned to the prototype date
-const NOW = new Date('2026-04-13T09:00:00')
-
-const formattedDate = computed(() =>
-  new Intl.DateTimeFormat('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  }).format(NOW),
-)
-
-const formattedTime = computed(() =>
-  new Intl.DateTimeFormat('en-US', {
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true,
-  }).format(NOW),
-)
 </script>
 
 <style scoped>

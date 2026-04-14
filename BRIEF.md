@@ -32,9 +32,11 @@ Generate a local JSON file with ~50-60 clients across 5 caseworkers. Each casewo
 
 Elly, Orien, Kirsten, Mac, Charlotte
 
-### Neighborhoods (6)
+### Neighborhoods (18)
 
-Kensington, North Philadelphia, West Philadelphia, Center City, South Philadelphia, Germantown
+East Kensington, Fishtown - Lower Kensington, Feltonville, Fairhill, North Central, Olney, Brewerytown, Mantua, Mill Creek, West Powelton, Northern Liberties, Callowhill, Logan Square, Bella Vista, Newbold, Whitman, Logan, Wister
+
+> **Note:** Updated from 6 broad categories to 18 specific OpenDataPhilly neighborhood names to support a Philadelphia choropleth map visualization. Polygon boundary data sourced from OpenDataPhilly (CC 4.0).
 
 ### Referral Sources (5)
 
@@ -89,8 +91,8 @@ Each client record should include:
 **📊 Charts/Graphs:**
 
 - Average days from referral to first appointment (single number tile + trend line)
-- Referrals by neighborhood (horizontal bar chart)
-- Sites/providers serving the most individuals (horizontal bar chart, responds to global filters)
+- Referrals by neighborhood (interactive Philadelphia choropleth map; polygons colored by referral density using brand purple gradient; hover tooltip; unrepresented neighborhoods grey)
+- Sites/providers serving the most individuals (horizontal bar chart)
 - Care needs by neighborhood (stacked bar chart, shows all neighborhoods by default, responds to global filters)
 
 ---
