@@ -48,26 +48,43 @@ export function useDashboardData() {
   )
 
   const waitlistedClients = computed(() =>
-    filteredClients.value.filter((c) => c.clientStatus === 'waitlisted'),
+    filteredClients.value
+      .filter((c) => c.clientStatus === 'waitlisted')
+      .sort(
+        (a, b) =>
+          new Date(a.referralDate).getTime() - new Date(b.referralDate).getTime(),
+      ),
   )
 
   // ── Action Needed ────────────────────────────────────────────────────────────
 
   const notContactedIn30Days = computed(() =>
-    activeClients.value.filter((c) => {
-      const lastContact = new Date(c.lastContactDate)
-      const diffMs = today.getTime() - lastContact.getTime()
-      return diffMs >= 30 * 24 * 60 * 60 * 1000
-    }),
+    activeClients.value
+      .filter((c) => {
+        const lastContact = new Date(c.lastContactDate)
+        const diffMs = today.getTime() - lastContact.getTime()
+        return diffMs >= 30 * 24 * 60 * 60 * 1000
+      })
+      .sort(
+        (a, b) =>
+          new Date(a.lastContactDate).getTime() -
+          new Date(b.lastContactDate).getTime(),
+      ),
   )
 
   const medicaidExpiringIn30Days = computed(() =>
-    filteredClients.value.filter((c) => {
-      if (c.clientStatus === 'closed') return false
-      const exp = new Date(c.medicaidExpirationDate)
-      const diffMs = exp.getTime() - today.getTime()
-      return diffMs >= 0 && diffMs <= 30 * 24 * 60 * 60 * 1000
-    }),
+    filteredClients.value
+      .filter((c) => {
+        if (c.clientStatus === 'closed') return false
+        const exp = new Date(c.medicaidExpirationDate)
+        const diffMs = exp.getTime() - today.getTime()
+        return diffMs >= 0 && diffMs <= 30 * 24 * 60 * 60 * 1000
+      })
+      .sort(
+        (a, b) =>
+          new Date(a.medicaidExpirationDate).getTime() -
+          new Date(b.medicaidExpirationDate).getTime(),
+      ),
   )
 
   // ── Summary metrics ──────────────────────────────────────────────────────────

@@ -7,7 +7,7 @@
         </div>
         <div>
           <h1 class="header-title">Supervisor Snapshot</h1>
-          <p class="header-subtitle">Philadelphia Community Mental Health — Monday Morning Briefing</p>
+          <p class="header-subtitle">Philadelphia Community Mental Health</p>
         </div>
       </div>
     </div>

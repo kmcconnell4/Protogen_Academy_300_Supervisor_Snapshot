@@ -43,15 +43,15 @@
           <table class="panel-table" aria-label="Not contacted client list">
             <thead>
               <tr>
-                <th scope="col">Client</th>
-                <th scope="col">Caseworker</th>
-                <th scope="col">Neighborhood</th>
-                <th scope="col" class="text-right">Days Since</th>
+                <th scope="col" class="sortable-th" @click="setSort('clientName')">Client <span class="sort-icon">{{ sortIcon('clientName') }}</span></th>
+                <th scope="col" class="sortable-th" @click="setSort('assignedCaseworker')">Caseworker <span class="sort-icon">{{ sortIcon('assignedCaseworker') }}</span></th>
+                <th scope="col" class="sortable-th" @click="setSort('neighborhood')">Neighborhood <span class="sort-icon">{{ sortIcon('neighborhood') }}</span></th>
+                <th scope="col" class="sortable-th text-right" @click="setSort('lastContactDate')">Days Since <span class="sort-icon">{{ sortIcon('lastContactDate') }}</span></th>
               </tr>
             </thead>
             <tbody>
               <tr
-                v-for="(c, i) in notContacted"
+                v-for="(c, i) in sortedNotContacted"
                 :key="c.clientId"
                 :class="{ 'row-alt': i % 2 === 1 }"
               >
@@ -76,15 +76,15 @@
           <table class="panel-table" aria-label="Medicaid expiring client list">
             <thead>
               <tr>
-                <th scope="col">Client</th>
-                <th scope="col">Caseworker</th>
-                <th scope="col">Expires</th>
-                <th scope="col" class="text-right">Days Left</th>
+                <th scope="col" class="sortable-th" @click="setSort('clientName')">Client <span class="sort-icon">{{ sortIcon('clientName') }}</span></th>
+                <th scope="col" class="sortable-th" @click="setSort('assignedCaseworker')">Caseworker <span class="sort-icon">{{ sortIcon('assignedCaseworker') }}</span></th>
+                <th scope="col" class="sortable-th" @click="setSort('medicaidExpirationDate')">Expires <span class="sort-icon">{{ sortIcon('medicaidExpirationDate') }}</span></th>
+                <th scope="col" class="sortable-th text-right" @click="setSort('medicaidExpirationDate')">Days Left <span class="sort-icon">{{ sortIcon('medicaidExpirationDate') }}</span></th>
               </tr>
             </thead>
             <tbody>
               <tr
-                v-for="(c, i) in medicaidExpiring"
+                v-for="(c, i) in sortedMedicaid"
                 :key="c.clientId"
                 :class="{ 'row-alt': i % 2 === 1 }"
               >
@@ -112,15 +112,15 @@
           <table class="panel-table" aria-label="Waitlisted clients list">
             <thead>
               <tr>
-                <th scope="col">Client</th>
-                <th scope="col">Neighborhood</th>
-                <th scope="col">Care Needed</th>
-                <th scope="col" class="text-right">Waiting</th>
+                <th scope="col" class="sortable-th" @click="setSort('clientName')">Client <span class="sort-icon">{{ sortIcon('clientName') }}</span></th>
+                <th scope="col" class="sortable-th" @click="setSort('neighborhood')">Neighborhood <span class="sort-icon">{{ sortIcon('neighborhood') }}</span></th>
+                <th scope="col" class="sortable-th" @click="setSort('careTypeNeeded')">Care Needed <span class="sort-icon">{{ sortIcon('careTypeNeeded') }}</span></th>
+                <th scope="col" class="sortable-th text-right" @click="setSort('referralDate')">Waiting <span class="sort-icon">{{ sortIcon('referralDate') }}</span></th>
               </tr>
             </thead>
             <tbody>
               <tr
-                v-for="(c, i) in waitlisted"
+                v-for="(c, i) in sortedWaitlisted"
                 :key="c.clientId"
                 :class="{ 'row-alt': i % 2 === 1 }"
               >
@@ -144,7 +144,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, watch } from 'vue'
 import type { Client } from '@/types'
 
 const props = defineProps<{
@@ -158,6 +158,47 @@ const props = defineProps<{
 defineEmits<{ 'update:modelValue': [value: boolean] }>()
 
 const TODAY = new Date('2026-04-13')
+
+// ── Sorting ──────────────────────────────────────────────────────────────────
+const sortKey = ref<string>('')
+const sortDir = ref<'asc' | 'desc'>('asc')
+
+watch(() => props.type, () => {
+  sortKey.value = ''
+  sortDir.value = 'asc'
+})
+
+function setSort(key: string): void {
+  if (sortKey.value === key) {
+    sortDir.value = sortDir.value === 'asc' ? 'desc' : 'asc'
+  } else {
+    sortKey.value = key
+    sortDir.value = 'asc'
+  }
+}
+
+function sortIcon(key: string): string {
+  if (sortKey.value !== key) return '↕'
+  return sortDir.value === 'asc' ? '↑' : '↓'
+}
+
+function applySorting(list: Client[]): Client[] {
+  if (!sortKey.value) return list
+  const k = sortKey.value
+  return [...list].sort((a, b) => {
+    const va = (a as Record<string, unknown>)[k]
+    const vb = (b as Record<string, unknown>)[k]
+    let cmp = 0
+    if (typeof va === 'string' && typeof vb === 'string') {
+      cmp = va < vb ? -1 : va > vb ? 1 : 0
+    }
+    return sortDir.value === 'asc' ? cmp : -cmp
+  })
+}
+
+const sortedNotContacted = computed(() => applySorting(props.notContacted))
+const sortedMedicaid = computed(() => applySorting(props.medicaidExpiring))
+const sortedWaitlisted = computed(() => applySorting(props.waitlisted))
 
 function daysSince(dateStr: string): number {
   return Math.floor((TODAY.getTime() - new Date(dateStr).getTime()) / 86_400_000)
@@ -311,5 +352,21 @@ const currentCount = computed(() => {
   color: #212121;
   opacity: 0.45;
   font-style: italic;
+}
+
+.sortable-th {
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 0.15s;
+}
+
+.sortable-th:hover {
+  opacity: 1 !important;
+}
+
+.sort-icon {
+  font-size: 0.6rem;
+  margin-left: 3px;
+  opacity: 0.6;
 }
 </style>
