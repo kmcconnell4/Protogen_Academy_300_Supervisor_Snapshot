@@ -17,25 +17,25 @@
         </button>
       </template>
       <v-card class="filter-dropdown" min-width="260">
-        <div class="dropdown-header">Date Range</div>
+        <div class="dropdown-header">Referral Date Range</div>
         <div class="dropdown-body">
-          <label class="dropdown-field-label" for="df-start">From (YYYY-MM)</label>
+          <label class="dropdown-field-label" for="df-start">From</label>
           <input
             id="df-start"
+            type="month"
             :value="filters.dateRange.start"
             class="dropdown-input"
-            placeholder="2026-03"
             aria-label="Start month filter"
-            @input="updateDateStart(($event.target as HTMLInputElement).value)"
+            @change="updateDateStart(($event.target as HTMLInputElement).value)"
           />
-          <label class="dropdown-field-label mt-2" for="df-end">To (YYYY-MM)</label>
+          <label class="dropdown-field-label mt-2" for="df-end">To</label>
           <input
             id="df-end"
+            type="month"
             :value="filters.dateRange.end"
             class="dropdown-input"
-            placeholder="2026-04"
             aria-label="End month filter"
-            @input="updateDateEnd(($event.target as HTMLInputElement).value)"
+            @change="updateDateEnd(($event.target as HTMLInputElement).value)"
           />
         </div>
       </v-card>

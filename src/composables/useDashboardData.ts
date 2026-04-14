@@ -34,14 +34,21 @@ export function useDashboardData() {
     }
   }
 
-  // Apply neighborhood + caseworker filters (date range applied per metric)
-  const filteredClients = computed(() =>
-    data.clients.filter(
+  // Apply neighborhood + caseworker + date range (referralDate) filters
+  const filteredClients = computed(() => {
+    const { start, end } = filters.value.dateRange
+    // Treat YYYY-MM range as inclusive: start of start-month to end of end-month
+    const startDate = new Date(`${start}-01`)
+    const endDate = new Date(`${end}-01`)
+    endDate.setMonth(endDate.getMonth() + 1) // first day of month after end
+    return data.clients.filter(
       (c) =>
         filters.value.neighborhoods.includes(c.neighborhood) &&
-        filters.value.caseworkers.includes(c.assignedCaseworker),
-    ),
-  )
+        filters.value.caseworkers.includes(c.assignedCaseworker) &&
+        new Date(c.referralDate) >= startDate &&
+        new Date(c.referralDate) < endDate,
+    )
+  })
 
   const activeClients = computed(() =>
     filteredClients.value.filter((c) => c.clientStatus === 'active'),
