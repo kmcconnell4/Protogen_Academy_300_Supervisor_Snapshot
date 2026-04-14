@@ -38,6 +38,8 @@ const props = defineProps<{
   data: [string, number][]
 }>()
 
+const emit = defineEmits<{ 'bar-click': [site: string] }>()
+
 // Gradient-like color range from primary to teal
 const BAR_COLORS = [
   '#6b297d', '#7a3490', '#5c8ed4', '#2a9d8f', '#f4a261',
@@ -57,10 +59,18 @@ const chartData = computed(() => ({
   ],
 }))
 
-const chartOptions = {
+const chartOptions = computed(() => ({
   indexAxis: 'y' as const,
   responsive: true,
   maintainAspectRatio: false,
+  onClick: (_evt: unknown, elements: { index: number }[]) => {
+    if (!elements.length) return
+    const site = props.data[elements[0].index]?.[0]
+    if (site) emit('bar-click', site)
+  },
+  onHover: (_evt: unknown, elements: unknown[], chart: { canvas: HTMLCanvasElement }) => {
+    chart.canvas.style.cursor = elements.length ? 'pointer' : 'default'
+  },
   plugins: {
     legend: { display: false },
     tooltip: {
@@ -83,7 +93,7 @@ const chartOptions = {
       grid: { display: false },
     },
   },
-}
+}))
 
 // Dynamic height based on number of sites
 const chartHeight = computed(() => `${Math.max(240, props.data.length * 38)}px`)

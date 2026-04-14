@@ -23,6 +23,7 @@
           :class="{ 'map-polygon--active': feature.count > 0 }"
           @mousemove="onMouseMove($event, feature)"
           @mouseleave="tooltip = null"
+          @click="onNeighborhoodClick(feature)"
         />
       </svg>
       <div
@@ -47,6 +48,8 @@ import geoData from '@/data/philly-neighborhoods.json'
 const props = defineProps<{
   data: Record<string, number>
 }>()
+
+const emit = defineEmits<{ 'neighborhood-click': [neighborhood: string] }>()
 
 // ── Container dimensions ──────────────────────────────────────────────────────
 const containerRef = ref<HTMLDivElement | null>(null)
@@ -131,6 +134,10 @@ function onMouseMove(event: MouseEvent, feature: { name: string; count: number }
   }
 }
 
+function onNeighborhoodClick(feature: { name: string; count: number }) {
+  if (feature.name) emit('neighborhood-click', feature.name)
+}
+
 // ── Aria label ────────────────────────────────────────────────────────────────
 const ariaLabel = computed(() => {
   const entries = Object.entries(props.data)
@@ -172,7 +179,7 @@ const ariaLabel = computed(() => {
 }
 
 .map-polygon {
-  cursor: default;
+  cursor: pointer;
   transition: opacity 0.15s;
 }
 

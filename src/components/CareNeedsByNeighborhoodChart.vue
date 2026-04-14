@@ -39,6 +39,8 @@ const props = defineProps<{
   careTypes: string[]
 }>()
 
+const emit = defineEmits<{ 'bar-click': [payload: { neighborhood: string; careType: string }] }>()
+
 const chartData = computed(() => ({
   labels: Object.keys(props.data),
   datasets: props.careTypes.map((ct, i) => ({
@@ -50,9 +52,18 @@ const chartData = computed(() => ({
   })),
 }))
 
-const chartOptions = {
+const chartOptions = computed(() => ({
   responsive: true,
   maintainAspectRatio: false,
+  onClick: (_evt: unknown, elements: { index: number; datasetIndex: number }[]) => {
+    if (!elements.length) return
+    const neighborhood = Object.keys(props.data)[elements[0].index]
+    const careType = props.careTypes[elements[0].datasetIndex]
+    if (neighborhood && careType) emit('bar-click', { neighborhood, careType })
+  },
+  onHover: (_evt: unknown, elements: unknown[], chart: { canvas: HTMLCanvasElement }) => {
+    chart.canvas.style.cursor = elements.length ? 'pointer' : 'default'
+  },
   plugins: {
     legend: {
       position: 'bottom' as const,
@@ -85,7 +96,7 @@ const chartOptions = {
       grid: { color: '#f0f0f0' },
     },
   },
-}
+}))
 </script>
 
 <style scoped>

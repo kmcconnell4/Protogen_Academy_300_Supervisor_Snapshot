@@ -52,6 +52,15 @@ export interface Client {
   providerName: string
 }
 
+export type BadgeVariant = 'error' | 'warning' | 'success'
+
+export interface DrawerColumn {
+  key: keyof Client
+  label: string
+  align?: 'left' | 'right'
+  badge?: (c: Client) => { text: string; variant: BadgeVariant } | null
+}
+
 export interface SiteMetadata {
   name: string
   neighborhood: Neighborhood

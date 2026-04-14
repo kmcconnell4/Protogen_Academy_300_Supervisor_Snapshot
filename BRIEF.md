@@ -167,7 +167,34 @@ Each tile is clickable and reveals an expandable panel that slides open below th
 ### Charts
 
 - Hover tooltips showing exact values on all charts
-- No click-through interactions on charts for now
+- All charts support click-through drill-down interactions that open a fly-out detail panel (right drawer) showing a filtered client list
+
+**Active Caseload per Caseworker** — click a bar to open a panel showing all active clients assigned to that caseworker:
+
+| Client Name | Neighborhood | Care Needed | Days Since Last Contact |
+|---|---|---|---|
+
+**Sites/Providers Serving Most Individuals** — click a bar to open a panel showing all clients served at that site:
+
+| Client Name | Caseworker | Care Needed | Status |
+|---|---|---|---|
+
+**Care Needs by Neighborhood** — click a stacked bar segment to open a panel filtered by both neighborhood AND care type:
+
+| Client Name | Caseworker | Status | Days Since Last Contact |
+|---|---|---|---|
+
+**Referrals by Neighborhood** — click a bar to open a panel showing all clients referred from that neighborhood:
+
+| Client Name | Caseworker | Care Needed | Referral Date |
+|---|---|---|---|
+
+**Philadelphia Choropleth Map** — click a neighborhood polygon to open a panel showing all clients in that neighborhood:
+
+| Client Name | Caseworker | Care Needed | Status |
+|---|---|---|---|
+
+All drill-down panels respect the global filters (neighborhood, date range, caseworker). Panel tables support clickable column headers for client-side sorting.
 
 ---
 

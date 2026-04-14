@@ -38,34 +38,112 @@
   </v-col>
 
   <!-- Side drawer (Vuetify teleports it to app root) -->
-  <ActionDetailDrawer
+  <DetailDrawer
     v-model="drawerOpen"
-    :type="activePanel"
-    :not-contacted="notContacted"
-    :medicaid-expiring="medicaidExpiring"
-    :waitlisted="waitlisted"
+    :title="drawerTitle"
+    :icon="drawerIcon"
+    :clients="drawerClients"
+    :columns="drawerColumns"
   />
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import type { Client } from '@/types'
+import type { Client, DrawerColumn } from '@/types'
 import ActionTile from '@/components/ActionTile.vue'
-import ActionDetailDrawer from '@/components/ActionDetailDrawer.vue'
+import DetailDrawer from '@/components/DetailDrawer.vue'
 
-defineProps<{
+const props = defineProps<{
   notContacted: Client[]
   medicaidExpiring: Client[]
   waitlisted: Client[]
   priorWaitlistCount: number
 }>()
 
-type Panel = 'notContacted' | 'medicaid' | 'waitlist' | null
-const drawerOpen = ref(false)
-const activePanel = ref<Panel>(null)
+const TODAY = new Date('2026-04-14')
 
-function openDrawer(panel: Panel) {
-  activePanel.value = panel
+function daysSince(dateStr: string): number {
+  return Math.floor((TODAY.getTime() - new Date(dateStr).getTime()) / 86_400_000)
+}
+
+function daysUntil(dateStr: string): number {
+  return Math.floor((new Date(dateStr).getTime() - TODAY.getTime()) / 86_400_000)
+}
+
+function formatDate(dateStr: string): string {
+  return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(new Date(dateStr))
+}
+
+const drawerOpen = ref(false)
+const drawerTitle = ref('')
+const drawerIcon = ref('')
+const drawerClients = ref<Client[]>([])
+const drawerColumns = ref<DrawerColumn[]>([])
+
+const columnConfigs: Record<string, { title: string; icon: string; getClients: () => Client[]; columns: DrawerColumn[] }> = {
+  notContacted: {
+    title: 'Not Contacted 30+ Days',
+    icon: 'mdi-phone-missed',
+    getClients: () => props.notContacted,
+    columns: [
+      { key: 'clientName', label: 'Client' },
+      { key: 'assignedCaseworker', label: 'Caseworker' },
+      { key: 'neighborhood', label: 'Neighborhood' },
+      {
+        key: 'lastContactDate',
+        label: 'Days Since',
+        align: 'right',
+        badge: (c) => ({ text: `${daysSince(c.lastContactDate)}d`, variant: 'error' }),
+      },
+    ],
+  },
+  medicaid: {
+    title: 'Medicaid Expiring in 30 Days',
+    icon: 'mdi-card-account-details-outline',
+    getClients: () => props.medicaidExpiring,
+    columns: [
+      { key: 'clientName', label: 'Client' },
+      { key: 'assignedCaseworker', label: 'Caseworker' },
+      {
+        key: 'medicaidExpirationDate',
+        label: 'Expires',
+        badge: (c) => ({ text: formatDate(c.medicaidExpirationDate), variant: 'warning' }),
+      },
+      {
+        key: 'medicaidExpirationDate',
+        label: 'Days Left',
+        align: 'right',
+        badge: (c) => {
+          const d = daysUntil(c.medicaidExpirationDate)
+          return { text: `${d}d`, variant: d <= 7 ? 'error' : 'warning' }
+        },
+      },
+    ],
+  },
+  waitlist: {
+    title: 'Waitlisted Clients',
+    icon: 'mdi-clock-alert-outline',
+    getClients: () => props.waitlisted,
+    columns: [
+      { key: 'clientName', label: 'Client' },
+      { key: 'neighborhood', label: 'Neighborhood' },
+      { key: 'careTypeNeeded', label: 'Care Needed' },
+      {
+        key: 'referralDate',
+        label: 'Waiting',
+        align: 'right',
+        badge: (c) => ({ text: `${daysSince(c.referralDate)}d`, variant: 'warning' }),
+      },
+    ],
+  },
+}
+
+function openDrawer(panel: keyof typeof columnConfigs) {
+  const config = columnConfigs[panel]
+  drawerTitle.value = config.title
+  drawerIcon.value = config.icon
+  drawerClients.value = config.getClients()
+  drawerColumns.value = config.columns
   drawerOpen.value = true
 }
 </script>

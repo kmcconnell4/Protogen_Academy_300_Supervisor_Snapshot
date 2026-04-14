@@ -12,6 +12,7 @@
     </div>
     <div class="chart-wrap" style="height: 240px">
       <Bar
+        class="caseload-canvas"
         :data="chartData"
         :options="chartOptions"
         aria-label="Bar chart: active client caseload per caseworker"
@@ -44,6 +45,8 @@ const props = defineProps<{
   caseload: Record<string, number>
 }>()
 
+const emit = defineEmits<{ 'bar-click': [caseworker: string] }>()
+
 const chartData = computed(() => ({
   labels: Object.keys(props.caseload),
   datasets: [
@@ -58,9 +61,18 @@ const chartData = computed(() => ({
   ],
 }))
 
-const chartOptions = {
+const chartOptions = computed(() => ({
   responsive: true,
   maintainAspectRatio: false,
+  onClick: (_evt: unknown, elements: { index: number }[]) => {
+    if (!elements.length) return
+    const label = Object.keys(props.caseload)[elements[0].index]
+    if (label) emit('bar-click', label)
+  },
+  onHover: (_evt: unknown, elements: unknown[]) => {
+    const canvas = document.querySelector('.caseload-canvas') as HTMLCanvasElement | null
+    if (canvas) canvas.style.cursor = elements.length ? 'pointer' : 'default'
+  },
   plugins: {
     legend: { display: false },
     tooltip: {
@@ -83,7 +95,7 @@ const chartOptions = {
       grid: { display: false },
     },
   },
-}
+}))
 
 const ariaDescription = computed(() =>
   Object.entries(props.caseload)

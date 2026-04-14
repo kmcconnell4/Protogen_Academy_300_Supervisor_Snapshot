@@ -36,6 +36,8 @@ const props = defineProps<{
   data: Record<string, number>
 }>()
 
+const emit = defineEmits<{ 'bar-click': [neighborhood: string] }>()
+
 const sortedEntries = computed(() =>
   Object.entries(props.data).sort((a, b) => b[1] - a[1]),
 )
@@ -53,10 +55,18 @@ const chartData = computed(() => ({
   ],
 }))
 
-const chartOptions = {
+const chartOptions = computed(() => ({
   indexAxis: 'y' as const,
   responsive: true,
   maintainAspectRatio: false,
+  onClick: (_evt: unknown, elements: { index: number }[]) => {
+    if (!elements.length) return
+    const neighborhood = sortedEntries.value[elements[0].index]?.[0]
+    if (neighborhood) emit('bar-click', neighborhood)
+  },
+  onHover: (_evt: unknown, elements: unknown[], chart: { canvas: HTMLCanvasElement }) => {
+    chart.canvas.style.cursor = elements.length ? 'pointer' : 'default'
+  },
   plugins: {
     legend: { display: false },
     tooltip: {
@@ -79,7 +89,7 @@ const chartOptions = {
       grid: { display: false },
     },
   },
-}
+}))
 
 const ariaDescription = computed(() =>
   sortedEntries.value.map(([n, v]) => `${n}: ${v}`).join(', '),
