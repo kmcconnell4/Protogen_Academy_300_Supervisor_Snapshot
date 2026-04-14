@@ -10,16 +10,6 @@
           <p class="header-subtitle">Philadelphia Community Mental Health — Monday Morning Briefing</p>
         </div>
       </div>
-      <div class="header-meta" aria-label="Current date and time">
-        <div class="header-date-chip">
-          <v-icon size="16" class="mr-1" aria-hidden="true">mdi-calendar-today</v-icon>
-          {{ formattedDate }}
-        </div>
-        <div class="header-time-chip mt-1">
-          <v-icon size="14" class="mr-1" aria-hidden="true">mdi-clock-outline</v-icon>
-          {{ formattedTime }}
-        </div>
-      </div>
     </div>
   </header>
 </template>

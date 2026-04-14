@@ -49,7 +49,7 @@
         <v-icon color="primary" size="18" class="mr-1">mdi-chart-bar</v-icon>
         Community Insights
       </h2>
-      <v-row>
+      <v-row class="mb-6">
         <v-col cols="12" md="4">
           <ReferralsByNeighborhoodChart :data="referralsByNeighborhood" />
         </v-col>
