@@ -30,6 +30,8 @@
           :prior-active="data.priorMonthSnapshot.totalActiveClients"
           :prior-avg-days="data.priorMonthSnapshot.avgDaysToFirstAppointment"
           :prior-referrals="data.priorMonthSnapshot.newReferrals"
+          @total-active-click="onTotalActiveClick"
+          @new-referrals-click="onNewReferralsClick"
         />
       </v-row>
     </section>
@@ -113,12 +115,14 @@ const {
   filters,
   resetFilters,
   filteredClients,
+  activeClients,
   waitlistedClients,
   notContactedIn30Days,
   medicaidExpiringIn30Days,
   totalActiveCount,
   avgDaysToFirstAppointment,
   newReferralsThisMonth,
+  newReferralsThisMonthClients,
   caseloadPerCaseworker,
   referralsByNeighborhood,
   sitesByIndividualsServed,
@@ -229,6 +233,43 @@ function onNeighborhoodClick(neighborhood: string) {
       { key: 'assignedCaseworker', label: 'Caseworker' },
       { key: 'careTypeNeeded', label: 'Care Needed' },
       { key: 'referralDate', label: 'Referral Date', format: (c) => formatDate(c.referralDate) },
+    ],
+  })
+}
+
+function onTotalActiveClick() {
+  openChartDrawer({
+    title: 'Total Individuals Actively Served',
+    icon: 'mdi-account-group',
+    clients: activeClients.value,
+    columns: [
+      { key: 'clientName', label: 'Client' },
+      { key: 'assignedCaseworker', label: 'Caseworker' },
+      { key: 'neighborhood', label: 'Neighborhood' },
+      {
+        key: 'lastContactDate',
+        label: 'Last Contact',
+        align: 'right',
+        badge: (c) => {
+          const d = daysSince(c.lastContactDate)
+          const variant = d < 20 ? 'success' : d < 30 ? 'warning' : 'error'
+          return { text: `${d}d`, variant }
+        },
+      },
+    ],
+  })
+}
+
+function onNewReferralsClick() {
+  openChartDrawer({
+    title: 'New Referrals This Month',
+    icon: 'mdi-account-plus',
+    clients: newReferralsThisMonthClients.value,
+    columns: [
+      { key: 'clientName', label: 'Client' },
+      { key: 'assignedCaseworker', label: 'Caseworker' },
+      { key: 'neighborhood', label: 'Neighborhood' },
+      { key: 'careTypeNeeded', label: 'Care Needed' },
     ],
   })
 }

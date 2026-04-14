@@ -1,5 +1,13 @@
 <template>
-  <div class="metric-tile" :class="[`metric-tile--${color}`, { 'metric-tile--compact': compact }]">
+  <div
+    class="metric-tile"
+    :class="[`metric-tile--${color}`, { 'metric-tile--compact': compact, 'metric-tile--clickable': clickable }]"
+    :role="clickable ? 'button' : undefined"
+    :tabindex="clickable ? 0 : undefined"
+    @click="clickable && $emit('tile-click')"
+    @keydown.enter.prevent="clickable && $emit('tile-click')"
+    @keydown.space.prevent="clickable && $emit('tile-click')"
+  >
     <!-- Top accent gradient -->
     <div class="metric-tile__accent" :style="{ background: gradient }" />
 
@@ -22,6 +30,7 @@
             >{{ trendArrow }}{{ Math.abs(changePct).toFixed(1) }}%</span>
           </div>
         </div>
+        <v-icon v-if="clickable" class="metric-tile__open-arrow" :color="hexColor" size="16" aria-hidden="true">mdi-chevron-right</v-icon>
       </div>
     </template>
 
@@ -63,7 +72,10 @@ const props = defineProps<{
   suffix?: string
   lowerIsBetter?: boolean
   compact?: boolean
+  clickable?: boolean
 }>()
+
+defineEmits<{ 'tile-click': [] }>()
 
 const COLOR_MAP: Record<string, { hex: string; gradient: string }> = {
   success: { hex: '#285707', gradient: 'linear-gradient(90deg, #285707 0%, #4caf50 100%)' },
@@ -170,6 +182,27 @@ const trendClass = computed(() => (isPositive.value ? 'trend--positive' : 'trend
   min-height: 88px;
   height: 100%;
   box-sizing: border-box;
+}
+
+.metric-tile--clickable {
+  cursor: pointer;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.metric-tile--clickable:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
+}
+
+.metric-tile--clickable:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(107, 41, 125, 0.3);
+}
+
+.metric-tile__open-arrow {
+  flex-shrink: 0;
+  opacity: 0.55;
+  margin-left: auto;
 }
 
 .metric-tile--compact .metric-tile__accent {

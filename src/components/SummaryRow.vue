@@ -6,9 +6,11 @@
       :value="totalActive"
       :prior-value="priorActive"
       :compact="true"
+      :clickable="true"
       color="success"
       icon="mdi-account-group"
       aria-label="Total individuals actively served with trend"
+      @tile-click="$emit('total-active-click')"
     />
   </v-col>
   <v-col cols="12" sm="6" md="2">
@@ -30,9 +32,11 @@
       :value="newReferrals"
       :prior-value="priorReferrals"
       :compact="true"
+      :clickable="true"
       color="warning"
       icon="mdi-account-plus"
       aria-label="New referrals this month compared to prior month"
+      @tile-click="$emit('new-referrals-click')"
     />
   </v-col>
 </template>
@@ -47,5 +51,10 @@ defineProps<{
   priorActive: number
   priorAvgDays: number
   priorReferrals: number
+}>()
+
+defineEmits<{
+  'total-active-click': []
+  'new-referrals-click': []
 }>()
 </script>

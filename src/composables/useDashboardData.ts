@@ -120,6 +120,10 @@ export function useDashboardData() {
     ).length,
   )
 
+  const newReferralsThisMonthClients = computed(() =>
+    filteredClients.value.filter((c) => c.referralDate.startsWith(currentMonthStr)),
+  )
+
   // ── Chart data helpers ───────────────────────────────────────────────────────
 
   const caseloadPerCaseworker = computed(() => {
@@ -173,6 +177,7 @@ export function useDashboardData() {
     totalActiveCount,
     avgDaysToFirstAppointment,
     newReferralsThisMonth,
+    newReferralsThisMonthClients,
     caseloadPerCaseworker,
     referralsByNeighborhood,
     sitesByIndividualsServed,
