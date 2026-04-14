@@ -132,10 +132,10 @@ function sortIcon(key: string): string {
 
 const sortedClients = computed(() => {
   if (!sortKey.value) return props.clients
-  const k = sortKey.value
+  const k = sortKey.value as keyof Client
   return [...props.clients].sort((a, b) => {
-    const va = (a as Record<string, unknown>)[k]
-    const vb = (b as Record<string, unknown>)[k]
+    const va = a[k]
+    const vb = b[k]
     let cmp = 0
     if (typeof va === 'string' && typeof vb === 'string') {
       cmp = va < vb ? -1 : va > vb ? 1 : 0
