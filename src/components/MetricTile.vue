@@ -1,28 +1,53 @@
 <template>
-  <div class="metric-tile" :class="`metric-tile--${color}`">
+  <div class="metric-tile" :class="[`metric-tile--${color}`, { 'metric-tile--compact': compact }]">
     <!-- Top accent gradient -->
     <div class="metric-tile__accent" :style="{ background: gradient }" />
 
-    <div class="metric-tile__body">
-      <div class="metric-tile__icon-wrap" :style="{ background: iconBg }" aria-hidden="true">
-        <v-icon :color="hexColor" size="22">{{ icon }}</v-icon>
+    <!-- ── COMPACT LAYOUT ── -->
+    <template v-if="compact">
+      <div class="metric-tile__body metric-tile__body--compact">
+        <div class="metric-tile__icon-wrap metric-tile__icon-wrap--sm" :style="{ background: iconBg }" aria-hidden="true">
+          <v-icon :color="hexColor" size="16">{{ icon }}</v-icon>
+        </div>
+        <div class="metric-tile__meta">
+          <div class="metric-tile__label metric-tile__label--sm">{{ label }}</div>
+          <div class="metric-tile__value-row">
+            <span class="metric-tile__value metric-tile__value--sm" :style="{ color: hexColor }">
+              {{ value }}<span v-if="suffix" class="metric-tile__suffix--sm"> {{ suffix }}</span>
+            </span>
+            <span
+              class="metric-tile__trend metric-tile__trend--sm"
+              :class="trendClass"
+              :aria-label="`${trendLabel} compared to last month`"
+            >{{ trendArrow }}{{ Math.abs(changePct).toFixed(1) }}%</span>
+          </div>
+        </div>
       </div>
+    </template>
 
-      <div class="metric-tile__label">{{ label }}</div>
+    <!-- ── FULL LAYOUT ── -->
+    <template v-else>
+      <div class="metric-tile__body">
+        <div class="metric-tile__icon-wrap" :style="{ background: iconBg }" aria-hidden="true">
+          <v-icon :color="hexColor" size="22">{{ icon }}</v-icon>
+        </div>
 
-      <div class="metric-tile__value" :style="{ color: hexColor }">
-        {{ value }}<span v-if="suffix" class="metric-tile__suffix">{{ suffix }}</span>
+        <div class="metric-tile__label">{{ label }}</div>
+
+        <div class="metric-tile__value" :style="{ color: hexColor }">
+          {{ value }}<span v-if="suffix" class="metric-tile__suffix">{{ suffix }}</span>
+        </div>
+
+        <div class="metric-tile__trend" :class="trendClass" :aria-label="`${trendLabel} compared to last month`">
+          <span class="trend-arrow">{{ trendArrow }}</span>
+          <span class="trend-text">
+            {{ Math.abs(change).toFixed(typeof value === 'number' && !Number.isInteger(value) ? 1 : 0) }}
+            <span v-if="suffix"> {{ suffix }}</span>
+            ({{ Math.abs(changePct).toFixed(1) }}%) vs last month
+          </span>
+        </div>
       </div>
-
-      <div class="metric-tile__trend" :class="trendClass" :aria-label="`${trendLabel} compared to last month`">
-        <span class="trend-arrow">{{ trendArrow }}</span>
-        <span class="trend-text">
-          {{ Math.abs(change).toFixed(typeof value === 'number' && !Number.isInteger(value) ? 1 : 0) }}
-          <span v-if="suffix"> {{ suffix }}</span>
-          ({{ Math.abs(changePct).toFixed(1) }}%) vs last month
-        </span>
-      </div>
-    </div>
+    </template>
   </div>
 </template>
 
@@ -37,6 +62,7 @@ const props = defineProps<{
   icon: string
   suffix?: string
   lowerIsBetter?: boolean
+  compact?: boolean
 }>()
 
 const COLOR_MAP: Record<string, { hex: string; gradient: string }> = {
@@ -136,5 +162,80 @@ const trendClass = computed(() => (isPositive.value ? 'trend--positive' : 'trend
 
 .trend-arrow {
   font-size: 0.85rem;
+}
+
+/* ── Compact layout ──────────────────────────────────────── */
+.metric-tile--compact {
+  border-radius: 10px;
+}
+
+.metric-tile--compact .metric-tile__accent {
+  height: 3px;
+}
+
+.metric-tile__body--compact {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+}
+
+.metric-tile__icon-wrap--sm {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.metric-tile__meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.metric-tile__label--sm {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #212121;
+  opacity: 0.6;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: normal;
+  line-height: 1.2;
+  margin-bottom: 2px;
+}
+
+.metric-tile__value-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: nowrap;
+}
+
+.metric-tile__value--sm {
+  font-size: 1.65rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.metric-tile__suffix--sm {
+  font-size: 0.75rem;
+  font-weight: 500;
+  opacity: 0.75;
+  margin-left: 2px;
+}
+
+.metric-tile__trend--sm {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 10px;
+  white-space: nowrap;
 }
 </style>

@@ -10,34 +10,28 @@
       @reset="resetFilters"
     />
 
-    <!-- ── 🔴 Action Needed ────────────────────────────────────────────── -->
-    <section aria-labelledby="action-needed-heading" class="mb-2">
-      <h2 id="action-needed-heading" class="section-label mb-3">
-        <v-icon color="error" size="18" class="mr-1">mdi-alert-circle</v-icon>
-        Action Needed
+    <!-- ── At a Glance (Action Needed + Big Picture combined row) ──────── -->
+    <section aria-labelledby="at-a-glance-heading" class="mb-4">
+      <h2 id="at-a-glance-heading" class="section-label mb-2">
+        <v-icon color="primary" size="18" class="mr-1" aria-hidden="true">mdi-view-dashboard-outline</v-icon>
+        Metrics
       </h2>
-      <ActionNeededRow
-        :not-contacted="notContactedIn30Days"
-        :medicaid-expiring="medicaidExpiringIn30Days"
-        :waitlisted="waitlistedClients"
-        :prior-waitlist-count="data.priorMonthSnapshot.waitlistCount"
-      />
-    </section>
-
-    <!-- ── 🟡🟢 Summary Metrics ─────────────────────────────────────────── -->
-    <section aria-labelledby="summary-heading" class="mb-2">
-      <h2 id="summary-heading" class="section-label mb-3">
-        <v-icon color="success" size="18" class="mr-1">mdi-chart-line</v-icon>
-        Big Picture
-      </h2>
-      <SummaryRow
-        :total-active="totalActiveCount"
-        :avg-days-to-appt="avgDaysToFirstAppointment"
-        :new-referrals="newReferralsThisMonth"
-        :prior-active="data.priorMonthSnapshot.totalActiveClients"
-        :prior-avg-days="data.priorMonthSnapshot.avgDaysToFirstAppointment"
-        :prior-referrals="data.priorMonthSnapshot.newReferrals"
-      />
+      <v-row align="stretch">
+        <ActionNeededRow
+          :not-contacted="notContactedIn30Days"
+          :medicaid-expiring="medicaidExpiringIn30Days"
+          :waitlisted="waitlistedClients"
+          :prior-waitlist-count="data.priorMonthSnapshot.waitlistCount"
+        />
+        <SummaryRow
+          :total-active="totalActiveCount"
+          :avg-days-to-appt="avgDaysToFirstAppointment"
+          :new-referrals="newReferralsThisMonth"
+          :prior-active="data.priorMonthSnapshot.totalActiveClients"
+          :prior-avg-days="data.priorMonthSnapshot.avgDaysToFirstAppointment"
+          :prior-referrals="data.priorMonthSnapshot.newReferrals"
+        />
+      </v-row>
     </section>
 
     <!-- ── 🟡 Caseload Chart ───────────────────────────────────────────── -->
@@ -123,4 +117,5 @@ const {
   display: flex;
   align-items: center;
 }
+
 </style>
