@@ -10,6 +10,19 @@ A single-page dashboard for a supervisor at a non-profit community mental health
 
 ---
 
+## Background
+
+My husband is a Clinical Care Manager for Philadelphia's Community Behavorial Health insurance program. Essentially, they are the Medicaid mental health insurance provider for the city of Philadelphia. He manages a team of caseworkers who go out into the community and connect Philadelphians with resources and support they need.
+
+He has been my guinea pig for this project, and has thoughtfully provided some input as to what he would be looking for to more effectively manage his team and the community's needs. Big ticket items he wanted to understand were:
+- Where referrals are coming from (Neighborhoods, specific sites)
+- Which MH/PCP offices in that neighborhood serve the most folks
+- Wait times for individuals, especially at specific sites or offices
+- What type of care individuals need in a specific neighborhood or area
+
+
+---
+
 ## Tech
 
 - **Framework:** Vue 3 + Vuetify 3 (TypeScript)
@@ -86,7 +99,7 @@ Each client record should include:
 **🟢 Big Picture (Large number tiles with trend lines):**
 
 - Total individuals actively served
-- Average days from referral to first appointment
+- Average days from referral to first appointment (with highest-wait neighborhood or site callout inline)
 
 **📊 Charts/Graphs:**
 
@@ -111,7 +124,8 @@ Single-page vertical layout, top to bottom:
 │  🔴 Action Needed Row                               │
 │  [ Not Contacted 30+ ] [ Medicaid Expiring ]         │
 │  [ Waitlist ]                                        │
-│  (expandable panels slide open below each tile)      │
+│  (clicking opens right-side drawer; neighborhood     │
+│  context visible inline on each watchlist row)       │
 ├──────────────────────────────────────────────────────┤
 │  🟡🟢 Summary Row                                   │
 │  [ Total Served ] [ Avg Days to Appt ]               │
@@ -145,9 +159,9 @@ All global filters affect every section on the dashboard, including the 🔴 Act
 | Caseworker | Multi-select | All selected |
 | Reset/Clear Filters | Button | Resets all filters to defaults |
 
-### 🔴 Action Needed Expandable Panels
+### 🔴 Action Needed Panels
 
-Each tile is clickable and reveals an expandable panel that slides open below the tile with a client list.
+Each tile is clickable and opens the right-side detail drawer with a filtered client list (consistent with chart drill-down behavior). Each watchlist row surfaces neighborhood context inline — count + spread across neighborhoods — without requiring a drawer click.
 
 **Not Contacted 30+:**
 
@@ -258,14 +272,13 @@ Issues identified via `$impeccable critique`. Ordered by priority.
 
 ### P1 — Fix Before Release
 
+- [ ] **Promote the neighborhood map** (`DashboardView.vue`) — Geography is the primary lens per PRODUCT.md. The choropleth is currently buried in a `md="4"` column in the third section. It should be the visual anchor of the dashboard — more prominent, possibly used as a navigation affordance. Use `$impeccable layout`.
 - [ ] **Break the hero-metric template** (`MetricTile.vue`, `ActionTile.vue`) — The big-number + small-label + gradient-accent + trend-badge structure is the #1 AI dashboard cliché. Action Needed and Big Picture tiles should have distinct layout logic, not just different colors. Use `$impeccable shape` to redesign tile hierarchy before rebuilding.
 - [ ] **Break the identical card grids** (`ActionNeededRow.vue`, `SummaryRow.vue`) — Two rows of three same-sized cards flattens urgency. "12 clients not contacted" and "47 total served" should not look structurally identical. Consider asymmetric layout: most critical count large with inline list, supporting counts compact. Use `$impeccable layout`.
 - [ ] **Rethink the color strategy** (`src/plugins/theme.ts`, `DashboardHeader.vue`) — Purple primary + white + green/red/amber is the exact training-data reflex for "non-profit mental health dashboard." Run the scene sentence: *"A supervisor in their Philadelphia office on a gray Monday morning."* That scene doesn't force purple. Use `$impeccable colorize`.
 - [ ] **Remove decorative glassmorphism from header** (`DashboardHeader.vue`) — `backdrop-filter: blur(4px)` on the icon wrap and filter chips is pure decoration and an AI aesthetic tell. Replace with solid `rgba(255,255,255,0.2)`. Use `$impeccable polish`.
 
 ### P2 — Next Pass
-
-- [ ] **Promote the neighborhood map** (`DashboardView.vue`) — The choropleth is the most humanizing, most distinctive element. Currently buried in a `md="4"` column in the third section. It should be more prominent, possibly used as a navigation affordance. Use `$impeccable layout`.
 - [ ] **Remove redundant section header icons** (`DashboardView.vue`) — An alert icon next to "Action Needed" restates the obvious. Replace or remove. A live count badge on the section heading would add information instead.
 - [ ] **Replace hard-coded hex colors with CSS custom properties** — 16+ hex values spread across component scripts with no design tokens. If brand purple changes, it's a find-and-replace across 6 files. Use `$impeccable extract`.
 - [ ] **Replace Roboto** — Flagged by detector (`src/App.vue:15`). Reads as "generic Google Material app." A system font stack or a well-chosen humanist sans would be more distinctive. Use `$impeccable typeset`.
