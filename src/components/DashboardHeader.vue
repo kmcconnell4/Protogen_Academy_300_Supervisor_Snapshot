@@ -71,12 +71,11 @@
   width: 56px;
   height: 56px;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  backdrop-filter: blur(4px);
 }
 
 .header-title {
@@ -112,7 +111,6 @@
   padding: 4px 14px;
   font-size: 0.82rem;
   font-weight: 500;
-  backdrop-filter: blur(4px);
   white-space: nowrap;
 }
 

@@ -22,6 +22,7 @@
           :medicaid-expiring="medicaidExpiringIn30Days"
           :waitlisted="waitlistedClients"
           :prior-waitlist-count="data.priorMonthSnapshot.waitlistCount"
+          :prior-month-label="priorMonthLabel"
         />
         <SummaryRow
           :total-active="totalActiveCount"
@@ -30,6 +31,8 @@
           :prior-active="data.priorMonthSnapshot.totalActiveClients"
           :prior-avg-days="data.priorMonthSnapshot.avgDaysToFirstAppointment"
           :prior-referrals="data.priorMonthSnapshot.newReferrals"
+          :prior-month-label="priorMonthLabel"
+          :longest-wait-neighborhood="longestWaitNeighborhood"
           @total-active-click="onTotalActiveClick"
           @new-referrals-click="onNewReferralsClick"
         />
@@ -127,6 +130,8 @@ const {
   referralsByNeighborhood,
   sitesByIndividualsServed,
   careNeedsByNeighborhood,
+  longestWaitNeighborhood,
+  priorMonthLabel,
 } = useDashboardData()
 
 // ── Chart drill-down drawer state ─────────────────────────────────────────────

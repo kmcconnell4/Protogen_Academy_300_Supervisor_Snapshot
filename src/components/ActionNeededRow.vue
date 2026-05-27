@@ -1,56 +1,99 @@
 <template>
-  <!-- Fragment: 3 compact cols + drawer -->
-  <v-col cols="12" sm="6" md="2">
-    <ActionTile
-      title="Not Contacted 30+ Days"
-      :count="notContacted.length"
-      color="error"
-      icon="mdi-phone-missed"
-      :compact="true"
-      :expanded="false"
-      @toggle="openDrawer('notContacted')"
+  <v-col cols="12" md="6">
+    <div
+      class="watchlist-card"
+      :class="{ 'watchlist-card--clear': totalCount === 0 }"
+    >
+      <!-- Header -->
+      <div class="watchlist-header">
+        <span class="watchlist-header__label">Needs Attention</span>
+        <span
+          v-if="totalCount > 0"
+          class="watchlist-header__badge"
+          :aria-label="`${totalCount} items need attention`"
+        >{{ totalCount }}</span>
+        <span v-else class="watchlist-header__clear">All clear this week</span>
+      </div>
+
+      <!-- Row: Not Contacted -->
+      <button
+        class="watchlist-row"
+        @click="openDrawer('notContacted')"
+        :aria-label="`Not contacted in 30+ days: ${notContacted.length} clients. View list.`"
+      >
+        <span
+          class="watchlist-row__count"
+          :class="notContacted.length > 0 ? 'count--alert' : 'count--zero'"
+          aria-hidden="true"
+        >{{ notContacted.length }}</span>
+        <div class="watchlist-row__body">
+          <span class="watchlist-row__label">Not contacted in 30+ days</span>
+          <span v-if="notContacted.length > 0" class="watchlist-row__meta">
+            {{ neighborhoodSpread(notContacted) }}
+          </span>
+        </div>
+        <v-icon class="watchlist-row__arrow" size="14" aria-hidden="true">mdi-arrow-right</v-icon>
+      </button>
+
+      <div class="watchlist-divider" role="separator" />
+
+      <!-- Row: Medicaid Expiring -->
+      <button
+        class="watchlist-row"
+        @click="openDrawer('medicaid')"
+        :aria-label="`Medicaid expiring in 30 days: ${medicaidExpiring.length} clients. View list.`"
+      >
+        <span
+          class="watchlist-row__count"
+          :class="medicaidExpiring.length > 0 ? 'count--alert' : 'count--zero'"
+          aria-hidden="true"
+        >{{ medicaidExpiring.length }}</span>
+        <div class="watchlist-row__body">
+          <span class="watchlist-row__label">Medicaid expiring in 30 days</span>
+          <span v-if="medicaidExpiring.length > 0" class="watchlist-row__meta">
+            {{ neighborhoodSpread(medicaidExpiring) }}
+          </span>
+        </div>
+        <v-icon class="watchlist-row__arrow" size="14" aria-hidden="true">mdi-arrow-right</v-icon>
+      </button>
+
+      <div class="watchlist-divider" role="separator" />
+
+      <!-- Row: Waitlist -->
+      <button
+        class="watchlist-row"
+        @click="openDrawer('waitlist')"
+        :aria-label="`On the waitlist: ${waitlisted.length} clients. ${waitlistTrendLabel}. View list.`"
+      >
+        <span
+          class="watchlist-row__count"
+          :class="waitlisted.length > 0 ? 'count--waitlist' : 'count--zero'"
+          aria-hidden="true"
+        >{{ waitlisted.length }}</span>
+        <div class="watchlist-row__body">
+          <span class="watchlist-row__label">On the waitlist</span>
+          <span
+            class="watchlist-row__meta"
+            :class="waitlistTrend > 0 ? 'meta--alert' : 'meta--positive'"
+          >{{ waitlistTrendLabel }}</span>
+        </div>
+        <v-icon class="watchlist-row__arrow" size="14" aria-hidden="true">mdi-arrow-right</v-icon>
+      </button>
+    </div>
+
+    <DetailDrawer
+      v-model="drawerOpen"
+      :title="drawerTitle"
+      :icon="drawerIcon"
+      :clients="drawerClients"
+      :columns="drawerColumns"
     />
   </v-col>
-
-  <v-col cols="12" sm="6" md="2">
-    <ActionTile
-      title="Medicaid Expiring in 30 Days"
-      :count="medicaidExpiring.length"
-      color="error"
-      icon="mdi-card-account-details-outline"
-      :compact="true"
-      :expanded="false"
-      @toggle="openDrawer('medicaid')"
-    />
-  </v-col>
-
-  <v-col cols="12" sm="6" md="2">
-    <ActionTile
-      title="Waitlisted Clients"
-      :count="waitlisted.length"
-      :trend-count="waitlisted.length - priorWaitlistCount"
-      color="error"
-      icon="mdi-clock-alert-outline"
-      :compact="true"
-      :expanded="false"
-      @toggle="openDrawer('waitlist')"
-    />
-  </v-col>
-
-  <!-- Side drawer (Vuetify teleports it to app root) -->
-  <DetailDrawer
-    v-model="drawerOpen"
-    :title="drawerTitle"
-    :icon="drawerIcon"
-    :clients="drawerClients"
-    :columns="drawerColumns"
-  />
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import type { Client, DrawerColumn } from '@/types'
-import ActionTile from '@/components/ActionTile.vue'
 import DetailDrawer from '@/components/DetailDrawer.vue'
 
 const props = defineProps<{
@@ -58,6 +101,7 @@ const props = defineProps<{
   medicaidExpiring: Client[]
   waitlisted: Client[]
   priorWaitlistCount: number
+  priorMonthLabel: string
 }>()
 
 const TODAY = new Date('2026-04-14')
@@ -74,13 +118,41 @@ function formatDate(dateStr: string): string {
   return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(new Date(dateStr))
 }
 
+function neighborhoodSpread(clients: Client[]): string {
+  const hoods = new Set(clients.map((c) => c.neighborhood))
+  if (hoods.size === 1) return `in ${[...hoods][0]}`
+  return `across ${hoods.size} neighborhoods`
+}
+
+const totalCount = computed(
+  () =>
+    (props.notContacted.length > 0 ? 1 : 0) +
+    (props.medicaidExpiring.length > 0 ? 1 : 0) +
+    (props.waitlisted.length > 0 ? 1 : 0),
+)
+
+const waitlistTrend = computed(() => props.waitlisted.length - props.priorWaitlistCount)
+
+const waitlistTrendLabel = computed(() => {
+  const diff = waitlistTrend.value
+  if (diff === 0) return `Unchanged vs ${props.priorMonthLabel}`
+  const dir = diff > 0 ? '↑' : '↓'
+  return `${dir}${Math.abs(diff)} vs ${props.priorMonthLabel}`
+})
+
+// ── Drawer state ──────────────────────────────────────────────────────────────
 const drawerOpen = ref(false)
 const drawerTitle = ref('')
 const drawerIcon = ref('')
 const drawerClients = ref<Client[]>([])
 const drawerColumns = ref<DrawerColumn[]>([])
 
-const columnConfigs: Record<string, { title: string; icon: string; getClients: () => Client[]; columns: DrawerColumn[] }> = {
+const columnConfigs: Record<string, {
+  title: string
+  icon: string
+  getClients: () => Client[]
+  columns: DrawerColumn[]
+}> = {
   notContacted: {
     title: 'Not Contacted 30+ Days',
     icon: 'mdi-phone-missed',
@@ -147,6 +219,146 @@ function openDrawer(panel: keyof typeof columnConfigs) {
   drawerOpen.value = true
 }
 </script>
+
+<style scoped>
+/* ── Card shell ──────────────────────────────────────────────────────────── */
+.watchlist-card {
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e8e8e8;
+  overflow: hidden;
+  height: 100%;
+}
+
+.watchlist-card--clear .watchlist-header {
+  background: oklch(97% 0.012 145);
+}
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.watchlist-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.watchlist-header__label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #9e9e9e;
+  flex: 1;
+}
+
+.watchlist-header__badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: oklch(96% 0.02 20);
+  color: oklch(42% 0.14 20);
+  border-radius: 20px;
+  padding: 2px 8px;
+  letter-spacing: 0.01em;
+}
+
+.watchlist-header__clear {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: oklch(38% 0.1 145);
+}
+
+/* ── Rows ────────────────────────────────────────────────────────────────── */
+.watchlist-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  width: 100%;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.12s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.watchlist-row:hover {
+  background: oklch(98.5% 0.003 270);
+}
+
+.watchlist-row:focus-visible {
+  outline: 2px solid oklch(42% 0.15 305);
+  outline-offset: -2px;
+}
+
+.watchlist-divider {
+  height: 1px;
+  background: #f0f0f0;
+  margin: 0 20px;
+}
+
+.watchlist-row__count {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  min-width: 2.5rem;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.count--alert {
+  color: oklch(48% 0.18 20);
+}
+
+.count--waitlist {
+  color: oklch(55% 0.14 65);
+}
+
+.count--zero {
+  color: #d4d4d4;
+}
+
+.watchlist-row__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.watchlist-row__label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #212121;
+  line-height: 1.3;
+}
+
+.watchlist-row__meta {
+  font-size: 0.75rem;
+  color: #9e9e9e;
+}
+
+.meta--alert {
+  color: oklch(48% 0.18 20);
+}
+
+.meta--positive {
+  color: oklch(38% 0.1 145);
+}
+
+.watchlist-row__arrow {
+  color: #bdbdbd !important;
+  flex-shrink: 0;
+  transition: transform 0.12s ease;
+}
+
+.watchlist-row:hover .watchlist-row__arrow {
+  transform: translateX(2px);
+  color: #9e9e9e !important;
+}
+</style>
 
 <style scoped>
 /* All table styles now live in ActionDetailDrawer.vue */

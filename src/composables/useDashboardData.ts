@@ -165,6 +165,35 @@ export function useDashboardData() {
     return result
   })
 
+  // ── Geographic context ───────────────────────────────────────────────────────
+
+  const longestWaitNeighborhood = computed((): { name: string; days: number } | null => {
+    const byNeighborhood: Record<string, number[]> = {}
+    for (const c of filteredClients.value) {
+      if (c.firstAppointmentDate) {
+        const days = Math.round(
+          (new Date(c.firstAppointmentDate).getTime() - new Date(c.referralDate).getTime()) / 86_400_000,
+        )
+        if (!byNeighborhood[c.neighborhood]) byNeighborhood[c.neighborhood] = []
+        byNeighborhood[c.neighborhood].push(days)
+      }
+    }
+    let maxAvg = -Infinity
+    let result: { name: string; days: number } | null = null
+    for (const [name, daysList] of Object.entries(byNeighborhood)) {
+      if (daysList.length === 0) continue
+      const avg = Math.round(daysList.reduce((a, b) => a + b, 0) / daysList.length)
+      if (avg > maxAvg) { maxAvg = avg; result = { name, days: avg } }
+    }
+    return result
+  })
+
+  const priorMonthLabel = computed(() => {
+    const d = new Date(today)
+    d.setMonth(d.getMonth() - 1)
+    return new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(d)
+  })
+
   return {
     data,
     filters,
@@ -182,5 +211,7 @@ export function useDashboardData() {
     referralsByNeighborhood,
     sitesByIndividualsServed,
     careNeedsByNeighborhood,
+    longestWaitNeighborhood,
+    priorMonthLabel,
   }
 }

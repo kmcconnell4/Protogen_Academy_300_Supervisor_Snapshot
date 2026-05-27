@@ -272,11 +272,11 @@ Issues identified via `$impeccable critique`. Ordered by priority.
 
 ### P1 — Fix Before Release
 
-- [ ] **Promote the neighborhood map** (`DashboardView.vue`) — Geography is the primary lens per PRODUCT.md. The choropleth is currently buried in a `md="4"` column in the third section. It should be the visual anchor of the dashboard — more prominent, possibly used as a navigation affordance. Use `$impeccable layout`.
-- [ ] **Break the hero-metric template** (`MetricTile.vue`, `ActionTile.vue`) — The big-number + small-label + gradient-accent + trend-badge structure is the #1 AI dashboard cliché. Action Needed and Big Picture tiles should have distinct layout logic, not just different colors. Use `$impeccable shape` to redesign tile hierarchy before rebuilding.
-- [ ] **Break the identical card grids** (`ActionNeededRow.vue`, `SummaryRow.vue`) — Two rows of three same-sized cards flattens urgency. "12 clients not contacted" and "47 total served" should not look structurally identical. Consider asymmetric layout: most critical count large with inline list, supporting counts compact. Use `$impeccable layout`.
+- [x] **Promote the neighborhood map** (`DashboardView.vue`) — Geography is the primary lens per PRODUCT.md. The choropleth is currently buried in a `md="4"` column in the third section. It should be the visual anchor of the dashboard — more prominent, possibly used as a navigation affordance. Use `$impeccable layout`.
+- [x] **Break the hero-metric template** (`MetricTile.vue`, `ActionTile.vue`) — Replaced with watchlist card (`ActionNeededRow`) and status strip (`SummaryRow`). `ActionTile.vue` and `MetricTile.vue` are now unused.
+- [x] **Break the identical card grids** (`ActionNeededRow.vue`, `SummaryRow.vue`) — Both are now single-column components; ActionNeededRow is a unified watchlist, SummaryRow is a status strip. No more symmetric tile grids.
 - [ ] **Rethink the color strategy** (`src/plugins/theme.ts`, `DashboardHeader.vue`) — Purple primary + white + green/red/amber is the exact training-data reflex for "non-profit mental health dashboard." Run the scene sentence: *"A supervisor in their Philadelphia office on a gray Monday morning."* That scene doesn't force purple. Use `$impeccable colorize`.
-- [ ] **Remove decorative glassmorphism from header** (`DashboardHeader.vue`) — `backdrop-filter: blur(4px)` on the icon wrap and filter chips is pure decoration and an AI aesthetic tell. Replace with solid `rgba(255,255,255,0.2)`. Use `$impeccable polish`.
+- [x] **Remove decorative glassmorphism from header** (`DashboardHeader.vue`) — `backdrop-filter: blur(4px)` removed from `.header-icon-wrap`, `.header-date-chip`, and `.header-time-chip`.
 
 ### P2 — Next Pass
 - [ ] **Remove redundant section header icons** (`DashboardView.vue`) — An alert icon next to "Action Needed" restates the obvious. Replace or remove. A live count badge on the section heading would add information instead.
