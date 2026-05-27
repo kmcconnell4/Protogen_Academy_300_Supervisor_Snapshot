@@ -181,6 +181,12 @@ const ariaLabel = computed(() => {
   overflow: hidden;
 }
 
+.map-wrap svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
 .map-polygon {
   cursor: pointer;
   transition: opacity 0.15s;
