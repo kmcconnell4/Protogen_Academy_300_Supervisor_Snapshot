@@ -109,11 +109,6 @@ const referralTrendLabel = computed(
   () => `${referralTrendArrow.value}${Math.abs(props.newReferrals - props.priorReferrals)} vs ${props.priorMonthLabel}`,
 )
 
-const longestWaitLabel = computed(() =>
-  props.longestWaitNeighborhood
-    ? `Longest wait: ${props.longestWaitNeighborhood.name} at ${props.longestWaitNeighborhood.days} days`
-    : '',
-)
 </script>
 
 <style scoped>
