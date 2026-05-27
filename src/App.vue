@@ -19,6 +19,18 @@ import DashboardView from '@/views/DashboardView.vue'
 :root {
   font-family: 'DM Sans Variable', 'DM Sans', sans-serif;
   font-variant-numeric: tabular-nums;
+
+  /* Design tokens */
+  --color-primary: #6b297d;
+  --color-primary-tint: #f8f0fb;
+  --color-secondary: #285707;
+  --color-secondary-light: #e7ffde;
+  --color-text-primary: #212121;
+  --color-text-muted: #757575;
+  --color-text-subtle: #9e9e9e;
+  --color-surface: #ffffff;
+  --color-border: #e0e0e0;
+  --color-border-subtle: #f0f0f0;
 }
 
 /* Override Vuetify's Roboto default */

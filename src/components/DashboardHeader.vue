@@ -19,7 +19,7 @@
 
 <style scoped>
 .dashboard-header {
-  background: #6b297d;
+  background: var(--color-primary);
   border-radius: 16px;
   padding: 28px 32px;
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);

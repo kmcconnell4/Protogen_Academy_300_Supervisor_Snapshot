@@ -12,10 +12,7 @@
 
     <!-- ── Overview: Map + At a Glance ────────────────────────────────── -->
     <section aria-labelledby="overview-heading" class="mb-4">
-      <h2 id="overview-heading" class="section-label mb-3">
-        <v-icon color="primary" size="18" class="mr-1" aria-hidden="true">mdi-map-outline</v-icon>
-        Overview
-      </h2>
+      <h2 id="overview-heading" class="section-label mb-3">Overview</h2>
       <v-row align="stretch">
         <v-col cols="12" md="7">
           <PhillyNeighborhoodMap
@@ -51,10 +48,7 @@
 
     <!-- ── 🟡 Caseload Chart ───────────────────────────────────────────── -->
     <section aria-labelledby="caseload-heading" class="mb-2">
-      <h2 id="caseload-heading" class="section-label mb-3">
-        <v-icon color="warning" size="18" class="mr-1">mdi-account-group</v-icon>
-        Team Capacity
-      </h2>
+      <h2 id="caseload-heading" class="section-label mb-3">Team Capacity</h2>
       <CaseloadChart
         :caseload="caseloadPerCaseworker"
         @bar-click="onCaseworkerClick"
@@ -63,10 +57,7 @@
 
     <!-- ── Care Needs by Neighborhood ─────────────────────────────────── -->
     <section aria-labelledby="care-needs-heading" class="mb-2">
-      <h2 id="care-needs-heading" class="section-label mb-3">
-        <v-icon color="primary" size="18" class="mr-1">mdi-chart-bar</v-icon>
-        Care Needs by Neighborhood
-      </h2>
+      <h2 id="care-needs-heading" class="section-label mb-3">Care Needs by Neighborhood</h2>
       <CareNeedsByNeighborhoodChart
         :data="careNeedsByNeighborhood"
         :care-types="data.metadata.careTypes"
@@ -76,10 +67,7 @@
 
     <!-- ── Sites Chart ────────────────────────────────────────────────── -->
     <section aria-labelledby="sites-heading" class="mb-6">
-      <h2 id="sites-heading" class="section-label mb-3">
-        <v-icon color="primary" size="18" class="mr-1">mdi-hospital-building</v-icon>
-        Sites &amp; Providers
-      </h2>
+      <h2 id="sites-heading" class="section-label mb-3">Sites &amp; Providers</h2>
       <SitesChart
         :data="sitesByIndividualsServed"
         @bar-click="onSiteClick"
@@ -292,8 +280,6 @@ function onNewReferralsClick() {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: oklch(45% 0.008 305);
-  display: flex;
-  align-items: center;
 }
 
 </style>

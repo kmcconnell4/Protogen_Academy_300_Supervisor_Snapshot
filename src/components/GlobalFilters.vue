@@ -306,20 +306,20 @@ const caseworkerLabel = computed(() => {
 }
 
 .filter-pill:hover {
-  border-color: #6b297d;
+  border-color: var(--color-primary);
   box-shadow: 0 2px 8px rgba(107, 41, 125, 0.12);
 }
 
 .filter-pill:focus-visible {
   outline: none;
   box-shadow: 0 0 0 3px rgba(107, 41, 125, 0.3);
-  border-color: #6b297d;
+  border-color: var(--color-primary);
 }
 
 .filter-pill--active {
-  background: #f8f0fb;
-  border-color: #6b297d;
-  color: #6b297d;
+  background: var(--color-primary-tint);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
 }
 
 .pill-icon {
@@ -355,7 +355,7 @@ const caseworkerLabel = computed(() => {
   border-radius: 8px;
   font-size: 0.82rem;
   font-weight: 600;
-  color: #6b297d;
+  color: var(--color-primary);
   cursor: pointer;
   transition: background 0.15s ease, border-color 0.15s ease;
   font-family: inherit;
@@ -364,8 +364,8 @@ const caseworkerLabel = computed(() => {
 }
 
 .filter-reset:hover {
-  background: #f8f0fb;
-  border-color: #e0e0e0;
+  background: var(--color-primary-tint);
+  border-color: var(--color-border);
 }
 
 .filter-reset:focus-visible {
@@ -377,8 +377,8 @@ const caseworkerLabel = computed(() => {
 .filter-active-badge {
   display: inline-flex;
   align-items: center;
-  background: #e7ffde;
-  color: #285707;
+  background: var(--color-secondary-light);
+  color: var(--color-secondary);
   border-radius: 20px;
   padding: 4px 10px;
   font-size: 0.72rem;
@@ -410,7 +410,7 @@ const caseworkerLabel = computed(() => {
 .dropdown-select-all {
   font-size: 0.72rem;
   font-weight: 600;
-  color: #6b297d;
+  color: var(--color-primary);
   background: none;
   border: none;
   cursor: pointer;
@@ -438,7 +438,7 @@ const caseworkerLabel = computed(() => {
   display: block;
   font-size: 0.7rem;
   font-weight: 600;
-  color: #757575;
+  color: var(--color-text-muted);
   margin-bottom: 4px;
 }
 
@@ -459,7 +459,7 @@ const caseworkerLabel = computed(() => {
 }
 
 .dropdown-input:focus {
-  border-color: #6b297d;
+  border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(107, 41, 125, 0.15);
 }
 
@@ -482,7 +482,7 @@ const caseworkerLabel = computed(() => {
 .dropdown-checkbox {
   width: 15px;
   height: 15px;
-  accent-color: #6b297d;
+  accent-color: var(--color-primary);
   cursor: pointer;
   flex-shrink: 0;
 }
