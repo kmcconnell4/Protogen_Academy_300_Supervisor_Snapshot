@@ -12,8 +12,18 @@ import DashboardView from '@/views/DashboardView.vue'
 
 <style>
 * {
-  font-family: 'Roboto', sans-serif;
   box-sizing: border-box;
+  font-family: inherit;
+}
+
+:root {
+  font-family: 'DM Sans Variable', 'DM Sans', sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Override Vuetify's Roboto default */
+.v-application {
+  font-family: 'DM Sans Variable', 'DM Sans', sans-serif !important;
 }
 
 html,
