@@ -249,3 +249,30 @@ Include complementary teriarty colors to support graphs and charts
 - Use `aria-labels` on all interactive elements, charts, and filters
 - Keyboard navigable filters and expandable panels
 - Screen reader friendly chart descriptions
+
+---
+
+## Design Improvement To-Do
+
+Issues identified via `$impeccable critique`. Ordered by priority.
+
+### P1 — Fix Before Release
+
+- [ ] **Break the hero-metric template** (`MetricTile.vue`, `ActionTile.vue`) — The big-number + small-label + gradient-accent + trend-badge structure is the #1 AI dashboard cliché. Action Needed and Big Picture tiles should have distinct layout logic, not just different colors. Use `$impeccable shape` to redesign tile hierarchy before rebuilding.
+- [ ] **Break the identical card grids** (`ActionNeededRow.vue`, `SummaryRow.vue`) — Two rows of three same-sized cards flattens urgency. "12 clients not contacted" and "47 total served" should not look structurally identical. Consider asymmetric layout: most critical count large with inline list, supporting counts compact. Use `$impeccable layout`.
+- [ ] **Rethink the color strategy** (`src/plugins/theme.ts`, `DashboardHeader.vue`) — Purple primary + white + green/red/amber is the exact training-data reflex for "non-profit mental health dashboard." Run the scene sentence: *"A supervisor in their Philadelphia office on a gray Monday morning."* That scene doesn't force purple. Use `$impeccable colorize`.
+- [ ] **Remove decorative glassmorphism from header** (`DashboardHeader.vue`) — `backdrop-filter: blur(4px)` on the icon wrap and filter chips is pure decoration and an AI aesthetic tell. Replace with solid `rgba(255,255,255,0.2)`. Use `$impeccable polish`.
+
+### P2 — Next Pass
+
+- [ ] **Promote the neighborhood map** (`DashboardView.vue`) — The choropleth is the most humanizing, most distinctive element. Currently buried in a `md="4"` column in the third section. It should be more prominent, possibly used as a navigation affordance. Use `$impeccable layout`.
+- [ ] **Remove redundant section header icons** (`DashboardView.vue`) — An alert icon next to "Action Needed" restates the obvious. Replace or remove. A live count badge on the section heading would add information instead.
+- [ ] **Replace hard-coded hex colors with CSS custom properties** — 16+ hex values spread across component scripts with no design tokens. If brand purple changes, it's a find-and-replace across 6 files. Use `$impeccable extract`.
+- [ ] **Replace Roboto** — Flagged by detector (`src/App.vue:15`). Reads as "generic Google Material app." A system font stack or a well-chosen humanist sans would be more distinctive. Use `$impeccable typeset`.
+
+### P3 — Polish
+
+- [ ] **Add an all-zero "good Monday" state** — When all Action Needed counts are zero, the dashboard should feel different. Three red tiles showing "0" look nearly identical to tiles showing critical counts. Design a positive empty state.
+- [ ] **Specific trend comparison windows** — Every trend badge reads "vs. last month." Replace with the actual month name ("vs. April 2026") to feel like a real tool, not a template.
+- [ ] **Add error/load failure states** — No error states exist for data load failure. Silent failure. Use `$impeccable harden`.
+- [ ] **Gradient header treatment** (`DashboardHeader.vue`) — The `135deg` purple-to-purple gradient is predictable. Either push it much further or go flat with conviction.
