@@ -289,3 +289,64 @@ Issues identified via `$impeccable critique`. Ordered by priority.
 - [x] **Specific trend comparison windows** — Every trend badge reads "vs. last month." Replace with the actual month name ("vs. April 2026") to feel like a real tool, not a template.
 - [x] **Add error/load failure states** — No error states exist for data load failure. Silent failure. Use `$impeccable harden`.
 - [x] **Gradient header treatment** (`DashboardHeader.vue`) — The `135deg` purple-to-purple gradient is predictable. Either push it much further or go flat with conviction.
+
+---
+
+## Feature: CSV Export for Charts
+
+Allow supervisors to download the data behind each chart as a CSV file for use in Excel, reporting workflows, or further analysis.
+
+### Design Decisions
+
+- **Button placement:** Small icon-only download button (`mdi-download`) in the top-right corner of each chart card header, aligned with the existing title/subtitle block. Icon-only keeps the header uncluttered; a tooltip on hover/focus provides the label.
+- **Scope:** Exports the *currently filtered* view — if a neighborhood or caseworker filter is active, the CSV reflects that. The filename encodes the filter state where practical.
+- **Filename format:** `{chart-slug}_{YYYY-MM}.csv` (e.g., `caseload-by-caseworker_2026-04.csv`). Date comes from the dashboard's `today` reference.
+- **Trigger:** Client-side only — no server round-trip. Generate a `Blob`, create an object URL, click a hidden `<a download>` element, then revoke the URL.
+- **No dependency:** Plain TypeScript utility — no external CSV library needed for this data volume.
+
+### Shared Utility
+
+Create `src/utils/exportCsv.ts`:
+
+```ts
+export function exportCsv(rows: string[][], filename: string): void {
+  const content = rows
+    .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+    .join('\n')
+  const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename
+  a.click()
+  URL.revokeObjectURL(url)
+}
+```
+
+All values are double-quote wrapped and inner quotes escaped — handles neighborhood names with commas or special characters safely.
+
+### Per-Chart Implementation
+
+| Chart | File | Prop shape | CSV columns |
+|---|---|---|---|
+| Referrals by Neighborhood (map) | `PhillyNeighborhoodMap.vue` | `data: Record<string, number>` | `Neighborhood, Referral Count` |
+| Active Caseload | `CaseloadChart.vue` | `caseload: Record<string, number>` | `Caseworker, Active Clients` |
+| Care Needs by Neighborhood | `CareNeedsByNeighborhoodChart.vue` | `data: Record<string, Record<string, number>>`, `careTypes: CareType[]` | `Neighborhood, [one column per care type]` |
+| Sites & Providers | `SitesChart.vue` | `data: Record<string, number>` | `Site, Individuals Served` |
+
+The Care Needs chart produces a pivoted/wide CSV — one row per neighborhood, one column per care type — which is the most useful format for Excel analysis.
+
+### Accessibility
+
+- Button must have `aria-label="Download [chart name] as CSV"` 
+- Must be keyboard reachable (standard `<button>` element)
+- On activation, a visually hidden live region should announce `"[chart name] downloaded"` so screen reader users get confirmation
+
+### Implementation Steps
+
+- [x] **Create `src/utils/exportCsv.ts`** — shared download utility
+- [x] **Add download button to `PhillyNeighborhoodMap.vue`** — `Neighborhood, Referral Count` rows; skip zero-count neighborhoods or include with 0 (include, for completeness)
+- [x] **Add download button to `CaseloadChart.vue`** — `Caseworker, Active Clients` rows
+- [x] **Add download button to `CareNeedsByNeighborhoodChart.vue`** — wide pivot: header row = `Neighborhood` + each care type; one data row per neighborhood
+- [x] **Add download button to `SitesChart.vue`** — `Site, Individuals Served` rows; sort descending (match chart order)
+- [x] **Add `aria-live` announcement** — small visually-hidden `<span>` in each chart card that gets populated on download for screen reader feedback

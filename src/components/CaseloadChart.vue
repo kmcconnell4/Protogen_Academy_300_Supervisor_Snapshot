@@ -5,6 +5,15 @@
         <div class="chart-card__title">Active Caseload per Caseworker</div>
         <div class="chart-card__subtitle">Current active clients assigned to each caseworker</div>
       </div>
+      <v-btn
+        icon="mdi-download"
+        size="small"
+        variant="text"
+        density="compact"
+        aria-label="Download Active Caseload as CSV"
+        title="Download as CSV"
+        @click="downloadCsv"
+      />
     </div>
     <div class="chart-wrap" style="height: 240px">
       <Bar
@@ -22,6 +31,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { Bar } from 'vue-chartjs'
+import { exportCsv } from '@/utils/exportCsv'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -98,6 +108,15 @@ const ariaDescription = computed(() =>
     .map(([cw, n]) => `${cw}: ${n}`)
     .join(', '),
 )
+
+function downloadCsv() {
+  const month = new Date().toISOString().slice(0, 7)
+  const rows: string[][] = [
+    ['Caseworker', 'Active Clients'],
+    ...Object.entries(props.caseload).map(([name, count]) => [name, String(count)]),
+  ]
+  exportCsv(rows, `caseload-by-caseworker_${month}.csv`)
+}
 </script>
 
 <style scoped>

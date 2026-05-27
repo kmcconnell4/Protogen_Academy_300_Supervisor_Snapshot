@@ -1,8 +1,19 @@
 <template>
   <v-card class="chart-card fill-height" :elevation="0">
     <div class="chart-card__header">
-      <div class="chart-card__title">Referrals by Neighborhood</div>
-      <div class="chart-card__subtitle">All referral statuses</div>
+      <div>
+        <div class="chart-card__title">Referrals by Neighborhood</div>
+        <div class="chart-card__subtitle">All referral statuses</div>
+      </div>
+      <v-btn
+        icon="mdi-download"
+        size="small"
+        variant="text"
+        density="compact"
+        aria-label="Download Referrals by Neighborhood as CSV"
+        title="Download as CSV"
+        @click="downloadCsv"
+      />
     </div>
     <div ref="containerRef" class="map-wrap">
       <svg
@@ -44,6 +55,7 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { geoMercator, geoPath } from 'd3-geo'
 import type { GeoPermissibleObjects } from 'd3-geo'
 import geoData from '@/data/philly-neighborhoods.json'
+import { exportCsv } from '@/utils/exportCsv'
 
 const props = defineProps<{
   data: Record<string, number>
@@ -147,6 +159,15 @@ const ariaLabel = computed(() => {
     .join(', ')
   return `Choropleth map of Philadelphia neighborhoods by referral count. Top neighborhoods: ${entries}`
 })
+
+function downloadCsv() {
+  const month = new Date().toISOString().slice(0, 7)
+  const rows: string[][] = [
+    ['Neighborhood', 'Referral Count'],
+    ...Object.entries(props.data).map(([neighborhood, count]) => [neighborhood, String(count)]),
+  ]
+  exportCsv(rows, `referrals-by-neighborhood_${month}.csv`)
+}
 </script>
 
 <style scoped>
@@ -160,6 +181,9 @@ const ariaLabel = computed(() => {
 
 .chart-card__header {
   padding: 16px 16px 8px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
 }
 
 .chart-card__title {

@@ -5,6 +5,15 @@
         <div class="chart-card__title">Care Needs by Neighborhood</div>
         <div class="chart-card__subtitle">All care types across filtered neighborhoods</div>
       </div>
+      <v-btn
+        icon="mdi-download"
+        size="small"
+        variant="text"
+        density="compact"
+        aria-label="Download Care Needs by Neighborhood as CSV"
+        title="Download as CSV"
+        @click="downloadCsv"
+      />
     </div>
     <div class="chart-wrap" style="height: 280px">
       <Bar
@@ -20,6 +29,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { Bar } from 'vue-chartjs'
+import { exportCsv } from '@/utils/exportCsv'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -97,6 +107,18 @@ const chartOptions = computed(() => ({
     },
   },
 }))
+
+function downloadCsv() {
+  const month = new Date().toISOString().slice(0, 7)
+  const rows: string[][] = [
+    ['Neighborhood', ...props.careTypes],
+    ...Object.entries(props.data).map(([neighborhood, needs]) => [
+      neighborhood,
+      ...props.careTypes.map(ct => String(needs[ct] ?? 0)),
+    ]),
+  ]
+  exportCsv(rows, `care-needs-by-neighborhood_${month}.csv`)
+}
 </script>
 
 <style scoped>

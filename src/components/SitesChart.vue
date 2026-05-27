@@ -5,6 +5,15 @@
         <div class="chart-card__title">Sites &amp; Providers Serving Most Individuals</div>
         <div class="chart-card__subtitle">Active clients per site</div>
       </div>
+      <v-btn
+        icon="mdi-download"
+        size="small"
+        variant="text"
+        density="compact"
+        aria-label="Download Sites & Providers as CSV"
+        title="Download as CSV"
+        @click="downloadCsv"
+      />
     </div>
     <div class="chart-wrap" :style="{ height: chartHeight }">
       <Bar
@@ -21,6 +30,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { Bar } from 'vue-chartjs'
+import { exportCsv } from '@/utils/exportCsv'
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -101,6 +111,15 @@ const chartHeight = computed(() => `${Math.max(240, props.data.length * 38)}px`)
 const ariaDescription = computed(() =>
   props.data.map(([site, n]) => `${site}: ${n}`).join(', '),
 )
+
+function downloadCsv() {
+  const month = new Date().toISOString().slice(0, 7)
+  const rows: string[][] = [
+    ['Site', 'Individuals Served'],
+    ...props.data.map(([site, count]) => [site, String(count)]),
+  ]
+  exportCsv(rows, `sites-providers_${month}.csv`)
+}
 </script>
 
 <style scoped>
