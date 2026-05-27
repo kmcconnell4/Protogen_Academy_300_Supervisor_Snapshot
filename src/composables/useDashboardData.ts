@@ -3,7 +3,37 @@ import type { DashboardFilters, Neighborhood, Caseworker } from '@/types'
 import rawData from '@/data/mockData.json'
 import type { MockData } from '@/types'
 
-const data = rawData as MockData
+// Validate data structure at module load; any issues surface via the `error` ref
+let dataLoadError: string | null = null
+let data: MockData
+try {
+  const d = rawData as MockData
+  if (!d?.clients || !d?.metadata || !d?.priorMonthSnapshot) {
+    throw new Error('Dashboard data is missing required fields')
+  }
+  data = d
+} catch (e) {
+  dataLoadError = e instanceof Error ? e.message : 'Unexpected error loading dashboard data'
+  data = {
+    clients: [],
+    metadata: {
+      generatedDate: '',
+      description: '',
+      caseworkers: [],
+      neighborhoods: [],
+      referralSources: [],
+      careTypes: [],
+      sites: [],
+    },
+    priorMonthSnapshot: {
+      month: '',
+      waitlistCount: 0,
+      newReferrals: 0,
+      totalActiveClients: 0,
+      avgDaysToFirstAppointment: 0,
+    },
+  }
+}
 
 // ─── Default filter values ────────────────────────────────────────────────────
 const today = new Date('2026-04-13')
@@ -21,6 +51,8 @@ function defaultDateRange() {
 }
 
 export function useDashboardData() {
+  const error = ref<string | null>(dataLoadError)
+
   const filters = ref<DashboardFilters>({
     neighborhoods: [...data.metadata.neighborhoods] as Neighborhood[],
     caseworkers: [...data.metadata.caseworkers] as Caseworker[],
@@ -213,5 +245,6 @@ export function useDashboardData() {
     careNeedsByNeighborhood,
     longestWaitNeighborhood,
     priorMonthLabel,
+    error,
   }
 }

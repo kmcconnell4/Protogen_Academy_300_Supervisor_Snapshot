@@ -285,7 +285,7 @@ Issues identified via `$impeccable critique`. Ordered by priority.
 
 ### P3 — Polish
 
-- [ ] **Add an all-zero "good Monday" state** — When all Action Needed counts are zero, the dashboard should feel different. Three red tiles showing "0" look nearly identical to tiles showing critical counts. Design a positive empty state.
+- [x] **Add an all-zero "good Monday" state** — When all Action Needed counts are zero, the dashboard should feel different. Three red tiles showing "0" look nearly identical to tiles showing critical counts. Design a positive empty state.
 - [x] **Specific trend comparison windows** — Every trend badge reads "vs. last month." Replace with the actual month name ("vs. April 2026") to feel like a real tool, not a template.
-- [ ] **Add error/load failure states** — No error states exist for data load failure. Silent failure. Use `$impeccable harden`.
+- [x] **Add error/load failure states** — No error states exist for data load failure. Silent failure. Use `$impeccable harden`.
 - [x] **Gradient header treatment** (`DashboardHeader.vue`) — The `135deg` purple-to-purple gradient is predictable. Either push it much further or go flat with conviction.

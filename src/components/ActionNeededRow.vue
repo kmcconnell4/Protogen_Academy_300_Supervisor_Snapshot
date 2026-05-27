@@ -15,70 +15,93 @@
         <span v-else class="watchlist-header__clear">All clear this week</span>
       </div>
 
-      <!-- Row: Not Contacted -->
-      <button
-        class="watchlist-row"
-        @click="openDrawer('notContacted')"
-        :aria-label="`Not contacted in 30+ days: ${notContacted.length} clients. View list.`"
-      >
-        <span
-          class="watchlist-row__count"
-          :class="notContacted.length > 0 ? 'count--alert' : 'count--zero'"
-          aria-hidden="true"
-        >{{ notContacted.length }}</span>
-        <div class="watchlist-row__body">
-          <span class="watchlist-row__label">Not contacted in 30+ days</span>
-          <span v-if="notContacted.length > 0" class="watchlist-row__meta">
-            {{ neighborhoodSpread(notContacted) }}
-          </span>
-        </div>
-        <v-icon class="watchlist-row__arrow" size="14" aria-hidden="true">mdi-arrow-right</v-icon>
-      </button>
-
-      <div class="watchlist-divider" role="separator" />
-
-      <!-- Row: Medicaid Expiring -->
-      <button
-        class="watchlist-row"
-        @click="openDrawer('medicaid')"
-        :aria-label="`Medicaid expiring in 30 days: ${medicaidExpiring.length} clients. View list.`"
-      >
-        <span
-          class="watchlist-row__count"
-          :class="medicaidExpiring.length > 0 ? 'count--alert' : 'count--zero'"
-          aria-hidden="true"
-        >{{ medicaidExpiring.length }}</span>
-        <div class="watchlist-row__body">
-          <span class="watchlist-row__label">Medicaid expiring in 30 days</span>
-          <span v-if="medicaidExpiring.length > 0" class="watchlist-row__meta">
-            {{ neighborhoodSpread(medicaidExpiring) }}
-          </span>
-        </div>
-        <v-icon class="watchlist-row__arrow" size="14" aria-hidden="true">mdi-arrow-right</v-icon>
-      </button>
-
-      <div class="watchlist-divider" role="separator" />
-
-      <!-- Row: Waitlist -->
-      <button
-        class="watchlist-row"
-        @click="openDrawer('waitlist')"
-        :aria-label="`On the waitlist: ${waitlisted.length} clients. ${waitlistTrendLabel}. View list.`"
-      >
-        <span
-          class="watchlist-row__count"
-          :class="waitlisted.length > 0 ? 'count--waitlist' : 'count--zero'"
-          aria-hidden="true"
-        >{{ waitlisted.length }}</span>
-        <div class="watchlist-row__body">
-          <span class="watchlist-row__label">On the waitlist</span>
+      <template v-if="totalCount > 0">
+        <!-- Row: Not Contacted -->
+        <button
+          class="watchlist-row"
+          @click="openDrawer('notContacted')"
+          :aria-label="`Not contacted in 30+ days: ${notContacted.length} clients. View list.`"
+        >
           <span
-            class="watchlist-row__meta"
-            :class="waitlistTrend > 0 ? 'meta--alert' : 'meta--positive'"
-          >{{ waitlistTrendLabel }}</span>
+            class="watchlist-row__count"
+            :class="notContacted.length > 0 ? 'count--alert' : 'count--zero'"
+            aria-hidden="true"
+          >{{ notContacted.length }}</span>
+          <div class="watchlist-row__body">
+            <span class="watchlist-row__label">Not contacted in 30+ days</span>
+            <span v-if="notContacted.length > 0" class="watchlist-row__meta">
+              {{ neighborhoodSpread(notContacted) }}
+            </span>
+          </div>
+          <v-icon class="watchlist-row__arrow" size="14" aria-hidden="true">mdi-arrow-right</v-icon>
+        </button>
+
+        <div class="watchlist-divider" role="separator" />
+
+        <!-- Row: Medicaid Expiring -->
+        <button
+          class="watchlist-row"
+          @click="openDrawer('medicaid')"
+          :aria-label="`Medicaid expiring in 30 days: ${medicaidExpiring.length} clients. View list.`"
+        >
+          <span
+            class="watchlist-row__count"
+            :class="medicaidExpiring.length > 0 ? 'count--alert' : 'count--zero'"
+            aria-hidden="true"
+          >{{ medicaidExpiring.length }}</span>
+          <div class="watchlist-row__body">
+            <span class="watchlist-row__label">Medicaid expiring in 30 days</span>
+            <span v-if="medicaidExpiring.length > 0" class="watchlist-row__meta">
+              {{ neighborhoodSpread(medicaidExpiring) }}
+            </span>
+          </div>
+          <v-icon class="watchlist-row__arrow" size="14" aria-hidden="true">mdi-arrow-right</v-icon>
+        </button>
+
+        <div class="watchlist-divider" role="separator" />
+
+        <!-- Row: Waitlist -->
+        <button
+          class="watchlist-row"
+          @click="openDrawer('waitlist')"
+          :aria-label="`On the waitlist: ${waitlisted.length} clients. ${waitlistTrendLabel}. View list.`"
+        >
+          <span
+            class="watchlist-row__count"
+            :class="waitlisted.length > 0 ? 'count--waitlist' : 'count--zero'"
+            aria-hidden="true"
+          >{{ waitlisted.length }}</span>
+          <div class="watchlist-row__body">
+            <span class="watchlist-row__label">On the waitlist</span>
+            <span
+              class="watchlist-row__meta"
+              :class="waitlistTrend > 0 ? 'meta--alert' : 'meta--positive'"
+            >{{ waitlistTrendLabel }}</span>
+          </div>
+          <v-icon class="watchlist-row__arrow" size="14" aria-hidden="true">mdi-arrow-right</v-icon>
+        </button>
+      </template>
+
+      <!-- All-clear: good Monday state -->
+      <template v-else>
+        <div class="all-clear-body" aria-label="All watchlist categories are clear">
+          <div class="all-clear-item">
+            <span class="all-clear-check" aria-hidden="true">✓</span>
+            <span class="all-clear-text">Contacts up to date</span>
+          </div>
+          <div class="all-clear-item">
+            <span class="all-clear-check" aria-hidden="true">✓</span>
+            <span class="all-clear-text">Medicaid coverage current</span>
+          </div>
+          <div class="all-clear-item">
+            <span class="all-clear-check" aria-hidden="true">✓</span>
+            <div>
+              <span class="all-clear-text">No one waiting</span>
+              <span class="all-clear-sub">{{ waitlistTrendLabel }}</span>
+            </div>
+          </div>
         </div>
-        <v-icon class="watchlist-row__arrow" size="14" aria-hidden="true">mdi-arrow-right</v-icon>
-      </button>
+      </template>
     </div>
 
     <DetailDrawer
@@ -357,6 +380,48 @@ function openDrawer(panel: keyof typeof columnConfigs) {
 .watchlist-row:hover .watchlist-row__arrow {
   transform: translateX(2px);
   color: #9e9e9e !important;
+}
+
+/* ── All-clear (good Monday) state ──────────────────────────────────────────── */
+.all-clear-body {
+  padding: 20px 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.all-clear-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.all-clear-check {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: oklch(93% 0.05 145);
+  color: oklch(38% 0.12 145);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 0.65rem;
+  font-weight: 800;
+}
+
+.all-clear-text {
+  font-size: 0.875rem;
+  color: oklch(36% 0.1 145);
+  font-weight: 500;
+  display: block;
+}
+
+.all-clear-sub {
+  font-size: 0.75rem;
+  color: oklch(55% 0.06 145);
+  display: block;
+  margin-top: 2px;
 }
 </style>
 

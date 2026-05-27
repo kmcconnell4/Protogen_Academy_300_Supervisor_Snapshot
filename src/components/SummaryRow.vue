@@ -1,6 +1,11 @@
 <template>
   <v-col cols="12">
     <div class="status-strip">
+      <!-- Header -->
+      <div class="strip-header">
+        <span class="strip-header__label">At a Glance</span>
+      </div>
+
       <!-- Total Active -->
       <div
         class="stat-row stat-row--clickable"
@@ -30,10 +35,10 @@
         :aria-label="`Average days to first appointment: ${avgDaysToAppt} days.${longestWaitLabel ? ' ' + longestWaitLabel : ''}`"
       >
         <span class="stat-value" aria-hidden="true">
-          {{ avgDaysToAppt }}<span class="stat-unit"> days</span>
+          {{ avgDaysToAppt }}
         </span>
         <div class="stat-body">
-          <span class="stat-label">Avg to first appointment</span>
+          <span class="stat-label">Avg days to first appointment</span>
           <span v-if="longestWaitNeighborhood" class="stat-geo">
             Longest: {{ longestWaitNeighborhood.name }} ({{ longestWaitNeighborhood.days }}d)
           </span>
@@ -111,6 +116,21 @@ const longestWaitLabel = computed(() =>
   border: 1px solid #e8e8e8;
   overflow: hidden;
   height: 100%;
+}
+
+.strip-header {
+  display: flex;
+  align-items: center;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.strip-header__label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: #9e9e9e;
 }
 
 .stat-row {

@@ -9,7 +9,14 @@
       :metadata="data.metadata"
       @reset="resetFilters"
     />
-
+    <!-- ── Error state ──────────────────────────────────────────────── -->
+    <div v-if="error" class="error-banner" role="alert" aria-live="assertive">
+      <v-icon color="error" size="20" aria-hidden="true">mdi-alert-circle-outline</v-icon>
+      <div>
+        <div class="error-banner__title">Unable to load dashboard data</div>
+        <div class="error-banner__message">{{ error }}</div>
+      </div>
+    </div>
     <!-- ── Overview: Map + At a Glance ────────────────────────────────── -->
     <section aria-labelledby="overview-heading" class="mb-4">
       <h2 id="overview-heading" class="section-label mb-3">Overview</h2>
@@ -120,6 +127,7 @@ const {
   careNeedsByNeighborhood,
   longestWaitNeighborhood,
   priorMonthLabel,
+  error,
 } = useDashboardData()
 
 // ── Chart drill-down drawer state ─────────────────────────────────────────────
@@ -280,6 +288,29 @@ function onNewReferralsClick() {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: oklch(45% 0.008 305);
+}
+
+.error-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 20px;
+  background: oklch(97% 0.015 20);
+  border: 1px solid oklch(88% 0.04 20);
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+.error-banner__title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: oklch(40% 0.14 20);
+}
+
+.error-banner__message {
+  font-size: 0.8rem;
+  color: oklch(50% 0.08 20);
+  margin-top: 2px;
 }
 
 </style>
