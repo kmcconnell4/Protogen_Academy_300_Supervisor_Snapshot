@@ -31,8 +31,13 @@
 
       <!-- Avg Days to Appt -->
       <div
-        class="stat-row"
-        :aria-label="`Average days to first appointment: ${avgDaysToAppt} days.${longestWaitLabel ? ' ' + longestWaitLabel : ''}`"
+        class="stat-row stat-row--clickable"
+        role="button"
+        tabindex="0"
+        :aria-label="`Average days to first appointment: ${avgDaysToAppt} days. Click to view breakdown by site.`"
+        @click="$emit('avg-days-click')"
+        @keydown.enter.prevent="$emit('avg-days-click')"
+        @keydown.space.prevent="$emit('avg-days-click')"
       >
         <span class="stat-value" aria-hidden="true">
           {{ avgDaysToAppt }}
@@ -43,6 +48,7 @@
             Longest: {{ longestWaitNeighborhood.name }} ({{ longestWaitNeighborhood.days }}d)
           </span>
         </div>
+        <v-icon class="stat-arrow" size="14" aria-hidden="true">mdi-arrow-right</v-icon>
       </div>
 
       <div class="stat-divider" role="separator" />
@@ -87,6 +93,7 @@ const props = defineProps<{
 
 defineEmits<{
   'total-active-click': []
+  'avg-days-click': []
   'new-referrals-click': []
 }>()
 

@@ -46,6 +46,7 @@
               :prior-month-label="priorMonthLabel"
               :longest-wait-neighborhood="longestWaitNeighborhood"
               @total-active-click="onTotalActiveClick"
+              @avg-days-click="onAvgDaysClick"
               @new-referrals-click="onNewReferralsClick"
             />
           </v-row>
@@ -91,7 +92,11 @@
       accent-color="#6b297d"
       chip-color="primary"
     />
-  </v-container>
+    <!-- ── Site wait time drawer ─────────────────────────────────────────── -->
+    <SiteWaitDrawer
+      v-model="avgDaysDrawerOpen"
+      :sites="avgWaitBySite"
+    />  </v-container>
 </template>
 
 <script setup lang="ts">
@@ -107,6 +112,7 @@ import PhillyNeighborhoodMap from '@/components/PhillyNeighborhoodMap.vue'
 import CareNeedsByNeighborhoodChart from '@/components/CareNeedsByNeighborhoodChart.vue'
 import SitesChart from '@/components/SitesChart.vue'
 import DetailDrawer from '@/components/DetailDrawer.vue'
+import SiteWaitDrawer from '@/components/SiteWaitDrawer.vue'
 
 const {
   data,
@@ -126,12 +132,14 @@ const {
   sitesByIndividualsServed,
   careNeedsByNeighborhood,
   longestWaitNeighborhood,
+  avgWaitBySite,
   priorMonthLabel,
   error,
 } = useDashboardData()
 
 // ── Chart drill-down drawer state ─────────────────────────────────────────────
 const chartDrawerOpen = ref(false)
+const avgDaysDrawerOpen = ref(false)
 const chartDrawerTitle = ref('')
 const chartDrawerIcon = ref('mdi-chart-bar')
 const chartDrawerClients = ref<Client[]>([])
@@ -273,6 +281,10 @@ function onNewReferralsClick() {
       { key: 'careTypeNeeded', label: 'Care Needed' },
     ],
   })
+}
+
+function onAvgDaysClick() {
+  avgDaysDrawerOpen.value = true
 }
 </script>
 

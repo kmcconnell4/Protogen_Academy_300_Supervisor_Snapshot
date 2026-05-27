@@ -350,3 +350,96 @@ The Care Needs chart produces a pivoted/wide CSV — one row per neighborhood, o
 - [x] **Add download button to `CareNeedsByNeighborhoodChart.vue`** — wide pivot: header row = `Neighborhood` + each care type; one data row per neighborhood
 - [x] **Add download button to `SitesChart.vue`** — `Site, Individuals Served` rows; sort descending (match chart order)
 - [x] **Add `aria-live` announcement** — small visually-hidden `<span>` in each chart card that gets populated on download for screen reader feedback
+
+---
+
+## Feature: Avg Days to Appointment — Site Breakdown Panel
+
+Make the "Avg days to first appointment" stat in the AT A GLANCE strip interactive. Clicking it opens a right-side drawer showing every site/provider with its address, neighborhood, and average wait time — sortable by column, paginated, defaulting to shortest wait first.
+
+### Why This Matters
+
+The "Longest: Mill Creek (19d)" callout in the stat strip tells you there's a problem neighborhood, but not which specific site is driving it. This panel bridges that gap, giving a supervisor a ranked list they can act on — call the provider, shift referral volume, flag the wait to leadership.
+
+### Design Decisions
+
+- **Interaction model:** Same as "Active clients" and "New referrals" rows — `role="button"`, `tabindex="0"`, keyboard-accessible (Enter + Space), `mdi-arrow-right` chevron on the right. The stat row gets `stat-row--clickable` class and a `@click` + keydown handler emitting `avg-days-click`.
+- **New component, not reused drawer:** `DetailDrawer.vue` is hardwired to `Client[]`. The site breakdown is `SiteWaitRow[]` — a fundamentally different row shape. Retrofitting generics into `DetailDrawer` risks breaking the 5 existing panel configurations. A focused `SiteWaitDrawer.vue` is the lower-risk path.
+- **Table columns:** Site Name | Address | Neighborhood | Avg Days (right-aligned, colored badge)
+- **Default sort:** Ascending by `avgDays` — shortest wait first. Supervisor's first question is "who's fastest?", both for routing new referrals and for benchmarking problem sites. Column headers are clickable to re-sort any column.
+- **Avg days badge coloring:** Reuses the `days-badge` pattern from `DetailDrawer`. Thresholds: ≤ 7d green, 8–14d amber, ≥ 15d red.
+- **Sites with no appointment data:** Show "No data" rather than "0 days" — zero would imply instant access, not missing data. These sites sort last (treat as `Infinity` for sort, display "—").
+- **Pagination:** Vuetify `v-pagination`, 10 rows per page. With 15 sites this is one page, but the infrastructure is in place if sites grow.
+- **Filter awareness:** `avgWaitBySite` is derived from `filteredClients` — active neighborhood/caseworker/date filters already scope which appointment records are included. A banner note in the drawer ("Showing data for current filter selection") prevents confusion when a site shows "No data" because its clients fall outside the date range.
+- **Address data:** Add `address: string` to `SiteMetadata` in `types/index.ts` and to all 15 sites in `mockData.json`. Addresses are fictitious but use realistic Philadelphia street patterns for each neighborhood.
+
+### Fictitious Site Addresses
+
+| Site | Address |
+|---|---|
+| Kensington Community Health Center | 2241 E Kensington Ave, Philadelphia, PA 19125 |
+| Rising Sun Community Partners | 1522 Frankford Ave, Philadelphia, PA 19125 |
+| North Philly Behavioral Health Associates | 3104 N Broad St, Philadelphia, PA 19132 |
+| West Philadelphia Wellness Clinic | 3801 Lancaster Ave, Philadelphia, PA 19104 |
+| Fairmount Counseling Center | 2720 W Girard Ave, Philadelphia, PA 19130 |
+| Broad Street Health Collaborative | 2834 N Broad St, Philadelphia, PA 19132 |
+| Center City Mental Health Institute | 1200 Callowhill St, Philadelphia, PA 19123 |
+| Fishtown Family Services | 1845 Frankford Ave, Philadelphia, PA 19125 |
+| Temple Hill Outpatient Center | 5900 N 5th St, Philadelphia, PA 19120 |
+| South Philly Recovery and Support Services | 730 S 10th St, Philadelphia, PA 19147 |
+| Unity Recovery Services | 1835 S 17th St, Philadelphia, PA 19145 |
+| Passyunk Avenue Psychiatric Services | 2234 E Passyunk Ave, Philadelphia, PA 19148 |
+| Germantown Holistic Behavioral Health | 5501 Greene St, Philadelphia, PA 19144 |
+| Chelten Avenue Community Clinic | 5301 Chelten Ave, Philadelphia, PA 19144 |
+| Logan Square Behavioral Health | 1900 Cherry St, Philadelphia, PA 19103 |
+
+### New Type
+
+Add `SiteWaitRow` to `src/types/index.ts`:
+
+```ts
+export interface SiteWaitRow {
+  name: string
+  address: string
+  neighborhood: Neighborhood
+  avgDays: number | null  // null = no appointment data within current filters
+}
+```
+
+### New Computed (`useDashboardData.ts`)
+
+`avgWaitBySite`: computed from `filteredClients`. Group clients by `site`, compute avg wait days for those with a `firstAppointmentDate`. Join against `data.metadata.sites` so every site is represented even if it has no qualifying clients. Sort ascending by `avgDays` (nulls last).
+
+### `SiteWaitDrawer.vue` Structure
+
+```
+v-navigation-drawer (location=end, width=560, temporary)
+├── .drawer-header  (purple accent bar + mdi-clock-outline icon + "Wait Times by Site" title + site count chip)
+├── v-divider
+├── .filter-note    (muted text: "Showing data for current filter selection")
+├── .drawer-body
+│   └── .panel-table-wrap
+│       └── table.panel-table
+│           ├── thead  (Site | Address | Neighborhood | Avg Wait — all sortable)
+│           └── tbody  (10 rows per page; Avg Wait uses days-badge coloring)
+└── v-pagination    (hidden when ≤10 sites)
+```
+
+### Wiring in `DashboardView.vue`
+
+- Import `SiteWaitDrawer`
+- Destructure `avgWaitBySite` from `useDashboardData()`
+- Add `avgDaysDrawerOpen = ref(false)`
+- Handle `@avg-days-click` from `SummaryRow` → set `avgDaysDrawerOpen = true`
+- Pass `avgWaitBySite` as the `:sites` prop to `SiteWaitDrawer`
+
+### Implementation Steps
+
+- [x] **Add `address` to `SiteMetadata` in `src/types/index.ts`**
+- [x] **Add `SiteWaitRow` type to `src/types/index.ts`**
+- [x] **Add addresses to all 15 sites in `src/data/mockData.json`** (see table above)
+- [x] **Add `avgWaitBySite` computed to `useDashboardData.ts`** and export it
+- [x] **Create `src/components/SiteWaitDrawer.vue`** — sortable table, `days-badge` coloring, pagination, filter note
+- [x] **Make "Avg days" row clickable in `SummaryRow.vue`** — add `stat-row--clickable`, emit `avg-days-click`, add `mdi-arrow-right` icon, update `aria-label`
+- [x] **Wire up in `DashboardView.vue`** — open ref, `SiteWaitDrawer` instance, handle emit, pass data
+- [x] **Add `aria-live` announcement** — small visually-hidden `<span>` in each chart card that gets populated on download for screen reader feedback

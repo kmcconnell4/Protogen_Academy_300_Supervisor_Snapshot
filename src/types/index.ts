@@ -64,8 +64,16 @@ export interface DrawerColumn {
 
 export interface SiteMetadata {
   name: string
+  address: string
   neighborhood: Neighborhood
   caseworkers: Caseworker[]
+}
+
+export interface SiteWaitRow {
+  name: string
+  address: string
+  neighborhood: Neighborhood
+  avgDays: number | null  // null = no appointment data within current filters
 }
 
 export interface PriorMonthSnapshot {

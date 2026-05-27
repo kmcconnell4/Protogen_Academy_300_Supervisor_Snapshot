@@ -1,5 +1,5 @@
 import { ref, computed } from 'vue'
-import type { DashboardFilters, Neighborhood, Caseworker } from '@/types'
+import type { DashboardFilters, Neighborhood, Caseworker, SiteWaitRow } from '@/types'
 import rawData from '@/data/mockData.json'
 import type { MockData } from '@/types'
 
@@ -220,6 +220,37 @@ export function useDashboardData() {
     return result
   })
 
+  const avgWaitBySite = computed((): SiteWaitRow[] => {
+    const siteWaits: Record<string, number[]> = {}
+    for (const c of filteredClients.value) {
+      if (c.firstAppointmentDate) {
+        const days = Math.round(
+          (new Date(c.firstAppointmentDate).getTime() - new Date(c.referralDate).getTime()) / 86_400_000,
+        )
+        if (!siteWaits[c.site]) siteWaits[c.site] = []
+        siteWaits[c.site].push(days)
+      }
+    }
+    return data.metadata.sites
+      .map((site) => {
+        const waits = siteWaits[site.name] ?? []
+        return {
+          name: site.name,
+          address: site.address,
+          neighborhood: site.neighborhood,
+          avgDays: waits.length > 0
+            ? Math.round(waits.reduce((a, b) => a + b, 0) / waits.length)
+            : null,
+        }
+      })
+      .sort((a, b) => {
+        if (a.avgDays === null && b.avgDays === null) return 0
+        if (a.avgDays === null) return 1
+        if (b.avgDays === null) return -1
+        return a.avgDays - b.avgDays
+      })
+  })
+
   const priorMonthLabel = computed(() => {
     const d = new Date(today)
     d.setMonth(d.getMonth() - 1)
@@ -244,6 +275,7 @@ export function useDashboardData() {
     sitesByIndividualsServed,
     careNeedsByNeighborhood,
     longestWaitNeighborhood,
+    avgWaitBySite,
     priorMonthLabel,
     error,
   }

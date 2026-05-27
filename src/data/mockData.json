@@ -38,21 +38,21 @@
       "Case Management"
     ],
     "sites": [
-      { "name": "Kensington Community Health Center", "neighborhood": "East Kensington", "caseworkers": ["Elly"] },
-      { "name": "Rising Sun Community Partners", "neighborhood": "Fishtown - Lower Kensington", "caseworkers": ["Elly"] },
-      { "name": "North Philly Behavioral Health Associates", "neighborhood": "North Central", "caseworkers": ["Kirsten"] },
-      { "name": "West Philadelphia Wellness Clinic", "neighborhood": "Mantua", "caseworkers": ["Orien"] },
-      { "name": "Fairmount Counseling Center", "neighborhood": "Brewerytown", "caseworkers": ["Orien"] },
-      { "name": "Broad Street Health Collaborative", "neighborhood": "North Central", "caseworkers": ["Elly"] },
-      { "name": "Center City Mental Health Institute", "neighborhood": "Callowhill", "caseworkers": ["Orien"] },
-      { "name": "Fishtown Family Services", "neighborhood": "Fishtown - Lower Kensington", "caseworkers": ["Kirsten"] },
-      { "name": "Temple Hill Outpatient Center", "neighborhood": "Olney", "caseworkers": ["Kirsten"] },
-      { "name": "South Philly Recovery and Support Services", "neighborhood": "Bella Vista", "caseworkers": ["Mac"] },
-      { "name": "Unity Recovery Services", "neighborhood": "Newbold", "caseworkers": ["Mac"] },
-      { "name": "Passyunk Avenue Psychiatric Services", "neighborhood": "Whitman", "caseworkers": ["Mac"] },
-      { "name": "Germantown Holistic Behavioral Health", "neighborhood": "Wister", "caseworkers": ["Charlotte"] },
-      { "name": "Chelten Avenue Community Clinic", "neighborhood": "Logan", "caseworkers": ["Charlotte"] },
-      { "name": "Logan Square Behavioral Health", "neighborhood": "Logan Square", "caseworkers": ["Charlotte"] }
+      { "name": "Kensington Community Health Center", "address": "2241 E Kensington Ave, Philadelphia, PA 19125", "neighborhood": "East Kensington", "caseworkers": ["Elly"] },
+      { "name": "Rising Sun Community Partners", "address": "1522 Frankford Ave, Philadelphia, PA 19125", "neighborhood": "Fishtown - Lower Kensington", "caseworkers": ["Elly"] },
+      { "name": "North Philly Behavioral Health Associates", "address": "3104 N Broad St, Philadelphia, PA 19132", "neighborhood": "North Central", "caseworkers": ["Kirsten"] },
+      { "name": "West Philadelphia Wellness Clinic", "address": "3801 Lancaster Ave, Philadelphia, PA 19104", "neighborhood": "Mantua", "caseworkers": ["Orien"] },
+      { "name": "Fairmount Counseling Center", "address": "2720 W Girard Ave, Philadelphia, PA 19130", "neighborhood": "Brewerytown", "caseworkers": ["Orien"] },
+      { "name": "Broad Street Health Collaborative", "address": "2834 N Broad St, Philadelphia, PA 19132", "neighborhood": "North Central", "caseworkers": ["Elly"] },
+      { "name": "Center City Mental Health Institute", "address": "1200 Callowhill St, Philadelphia, PA 19123", "neighborhood": "Callowhill", "caseworkers": ["Orien"] },
+      { "name": "Fishtown Family Services", "address": "1845 Frankford Ave, Philadelphia, PA 19125", "neighborhood": "Fishtown - Lower Kensington", "caseworkers": ["Kirsten"] },
+      { "name": "Temple Hill Outpatient Center", "address": "5900 N 5th St, Philadelphia, PA 19120", "neighborhood": "Olney", "caseworkers": ["Kirsten"] },
+      { "name": "South Philly Recovery and Support Services", "address": "730 S 10th St, Philadelphia, PA 19147", "neighborhood": "Bella Vista", "caseworkers": ["Mac"] },
+      { "name": "Unity Recovery Services", "address": "1835 S 17th St, Philadelphia, PA 19145", "neighborhood": "Newbold", "caseworkers": ["Mac"] },
+      { "name": "Passyunk Avenue Psychiatric Services", "address": "2234 E Passyunk Ave, Philadelphia, PA 19148", "neighborhood": "Whitman", "caseworkers": ["Mac"] },
+      { "name": "Germantown Holistic Behavioral Health", "address": "5501 Greene St, Philadelphia, PA 19144", "neighborhood": "Wister", "caseworkers": ["Charlotte"] },
+      { "name": "Chelten Avenue Community Clinic", "address": "5301 Chelten Ave, Philadelphia, PA 19144", "neighborhood": "Logan", "caseworkers": ["Charlotte"] },
+      { "name": "Logan Square Behavioral Health", "address": "1900 Cherry St, Philadelphia, PA 19103", "neighborhood": "Logan Square", "caseworkers": ["Charlotte"] }
     ]
   },
   "priorMonthSnapshot": {
