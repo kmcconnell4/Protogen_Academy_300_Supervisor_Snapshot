@@ -18,7 +18,7 @@ import DashboardView from '@/views/DashboardView.vue'
 
 html,
 body {
-  background-color: #f5f5f5;
+  background-color: oklch(98.5% 0.006 305);
   min-height: 100vh;
 }
 
@@ -34,10 +34,10 @@ body {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #f5f5f5;
+  background: oklch(98.5% 0.006 305);
 }
 ::-webkit-scrollbar-thumb {
-  background: #c977b1;
+  background: oklch(78% 0.05 305);
   border-radius: 3px;
 }
 

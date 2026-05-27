@@ -284,7 +284,7 @@ function openDrawer(panel: keyof typeof columnConfigs) {
 }
 
 .watchlist-row:hover {
-  background: oklch(98.5% 0.003 270);
+  background: oklch(98% 0.01 305);
 }
 
 .watchlist-row:focus-visible {

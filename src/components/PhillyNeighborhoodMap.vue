@@ -83,10 +83,10 @@ const maxCount = computed(() => {
 })
 
 function interpolateColor(t: number): string {
-  // #f3e4f7 (light purple) → #6b297d (brand purple)
-  const r = Math.round(0xf3 + t * (0x6b - 0xf3))
-  const g = Math.round(0xe4 + t * (0x29 - 0xe4))
-  const b = Math.round(0xf7 + t * (0x7d - 0xf7))
+  // #edf7e8 (light green) → #285707 (CBH forest green)
+  const r = Math.round(0xed + t * (0x28 - 0xed))
+  const g = Math.round(0xf7 + t * (0x57 - 0xf7))
+  const b = Math.round(0xe8 + t * (0x07 - 0xe8))
   return `rgb(${r},${g},${b})`
 }
 

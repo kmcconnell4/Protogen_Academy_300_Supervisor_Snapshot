@@ -13,10 +13,10 @@ export const theme: ThemeDefinition = {
     'secondary-lighten-1': '#e7ffde',
 
     // Neutrals
-    background: '#f5f5f5',
+    background: '#f7f5f9',
     surface: '#ffffff',
     'on-surface': '#212121',
-    'surface-variant': '#f5f5f5',
+    'surface-variant': '#f7f5f9',
 
     // Status
     error: '#e53935',       // 🔴 Action Needed (coral/red)

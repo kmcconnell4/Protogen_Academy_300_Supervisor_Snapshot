@@ -291,8 +291,7 @@ function onNewReferralsClick() {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #212121;
-  opacity: 0.5;
+  color: oklch(45% 0.008 305);
   display: flex;
   align-items: center;
 }

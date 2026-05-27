@@ -127,7 +127,7 @@ const longestWaitLabel = computed(() =>
 }
 
 .stat-row--clickable:hover {
-  background: oklch(98.5% 0.003 270);
+  background: oklch(98% 0.01 305);
 }
 
 .stat-row--clickable:focus-visible {

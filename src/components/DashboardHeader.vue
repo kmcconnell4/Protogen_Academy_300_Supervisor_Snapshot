@@ -19,36 +19,12 @@
 
 <style scoped>
 .dashboard-header {
-  background: linear-gradient(135deg, #6b297d 0%, #6a0c7d 55%, #c977b1 100%);
+  background: #6b297d;
   border-radius: 16px;
   padding: 28px 32px;
-  box-shadow: 0 8px 32px rgba(107, 41, 125, 0.22);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
   position: relative;
   overflow: hidden;
-}
-
-/* Decorative background circles */
-.dashboard-header::before {
-  content: '';
-  position: absolute;
-  top: -40px;
-  right: -40px;
-  width: 220px;
-  height: 220px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.06);
-  pointer-events: none;
-}
-.dashboard-header::after {
-  content: '';
-  position: absolute;
-  bottom: -60px;
-  right: 120px;
-  width: 160px;
-  height: 160px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.04);
-  pointer-events: none;
 }
 
 .header-inner {
