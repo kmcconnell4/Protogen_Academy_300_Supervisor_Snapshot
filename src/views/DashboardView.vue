@@ -10,32 +10,42 @@
       @reset="resetFilters"
     />
 
-    <!-- ── At a Glance (Action Needed + Big Picture combined row) ──────── -->
-    <section aria-labelledby="at-a-glance-heading" class="mb-4">
-      <h2 id="at-a-glance-heading" class="section-label mb-2">
-        <v-icon color="primary" size="18" class="mr-1" aria-hidden="true">mdi-view-dashboard-outline</v-icon>
-        Metrics
+    <!-- ── Overview: Map + At a Glance ────────────────────────────────── -->
+    <section aria-labelledby="overview-heading" class="mb-4">
+      <h2 id="overview-heading" class="section-label mb-3">
+        <v-icon color="primary" size="18" class="mr-1" aria-hidden="true">mdi-map-outline</v-icon>
+        Overview
       </h2>
       <v-row align="stretch">
-        <ActionNeededRow
-          :not-contacted="notContactedIn30Days"
-          :medicaid-expiring="medicaidExpiringIn30Days"
-          :waitlisted="waitlistedClients"
-          :prior-waitlist-count="data.priorMonthSnapshot.waitlistCount"
-          :prior-month-label="priorMonthLabel"
-        />
-        <SummaryRow
-          :total-active="totalActiveCount"
-          :avg-days-to-appt="avgDaysToFirstAppointment"
-          :new-referrals="newReferralsThisMonth"
-          :prior-active="data.priorMonthSnapshot.totalActiveClients"
-          :prior-avg-days="data.priorMonthSnapshot.avgDaysToFirstAppointment"
-          :prior-referrals="data.priorMonthSnapshot.newReferrals"
-          :prior-month-label="priorMonthLabel"
-          :longest-wait-neighborhood="longestWaitNeighborhood"
-          @total-active-click="onTotalActiveClick"
-          @new-referrals-click="onNewReferralsClick"
-        />
+        <v-col cols="12" md="7">
+          <PhillyNeighborhoodMap
+            :data="referralsByNeighborhood"
+            @neighborhood-click="onNeighborhoodClick"
+          />
+        </v-col>
+        <v-col cols="12" md="5">
+          <v-row>
+            <ActionNeededRow
+              :not-contacted="notContactedIn30Days"
+              :medicaid-expiring="medicaidExpiringIn30Days"
+              :waitlisted="waitlistedClients"
+              :prior-waitlist-count="data.priorMonthSnapshot.waitlistCount"
+              :prior-month-label="priorMonthLabel"
+            />
+            <SummaryRow
+              :total-active="totalActiveCount"
+              :avg-days-to-appt="avgDaysToFirstAppointment"
+              :new-referrals="newReferralsThisMonth"
+              :prior-active="data.priorMonthSnapshot.totalActiveClients"
+              :prior-avg-days="data.priorMonthSnapshot.avgDaysToFirstAppointment"
+              :prior-referrals="data.priorMonthSnapshot.newReferrals"
+              :prior-month-label="priorMonthLabel"
+              :longest-wait-neighborhood="longestWaitNeighborhood"
+              @total-active-click="onTotalActiveClick"
+              @new-referrals-click="onNewReferralsClick"
+            />
+          </v-row>
+        </v-col>
       </v-row>
     </section>
 
@@ -51,27 +61,17 @@
       />
     </section>
 
-    <!-- ── Charts Row ─────────────────────────────────────────────────── -->
-    <section aria-labelledby="charts-heading" class="mb-2">
-      <h2 id="charts-heading" class="section-label mb-3">
+    <!-- ── Care Needs by Neighborhood ─────────────────────────────────── -->
+    <section aria-labelledby="care-needs-heading" class="mb-2">
+      <h2 id="care-needs-heading" class="section-label mb-3">
         <v-icon color="primary" size="18" class="mr-1">mdi-chart-bar</v-icon>
-        Community Insights
+        Care Needs by Neighborhood
       </h2>
-      <v-row class="mb-6">
-        <v-col cols="12" md="4">
-          <PhillyNeighborhoodMap
-            :data="referralsByNeighborhood"
-            @neighborhood-click="onNeighborhoodClick"
-          />
-        </v-col>
-        <v-col cols="12" md="8">
-          <CareNeedsByNeighborhoodChart
-            :data="careNeedsByNeighborhood"
-            :care-types="data.metadata.careTypes"
-            @bar-click="onCareNeedsClick"
-          />
-        </v-col>
-      </v-row>
+      <CareNeedsByNeighborhoodChart
+        :data="careNeedsByNeighborhood"
+        :care-types="data.metadata.careTypes"
+        @bar-click="onCareNeedsClick"
+      />
     </section>
 
     <!-- ── Sites Chart ────────────────────────────────────────────────── -->

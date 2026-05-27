@@ -1,5 +1,5 @@
 <template>
-  <v-col cols="12" md="6">
+  <v-col cols="12">
     <div
       class="watchlist-card"
       :class="{ 'watchlist-card--clear': totalCount === 0 }"

@@ -154,6 +154,8 @@ const ariaLabel = computed(() => {
   border-radius: 8px;
   background: #ffffff;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08) !important;
+  display: flex;
+  flex-direction: column;
 }
 
 .chart-card__header {
@@ -174,7 +176,8 @@ const ariaLabel = computed(() => {
 
 .map-wrap {
   position: relative;
-  height: 280px;
+  flex: 1;
+  min-height: 360px;
   overflow: hidden;
 }
 
