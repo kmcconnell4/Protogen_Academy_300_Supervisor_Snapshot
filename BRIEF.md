@@ -408,7 +408,7 @@ export interface SiteWaitRow {
 
 ### New Computed (`useDashboardData.ts`)
 
-`avgWaitBySite`: computed from `filteredClients`. Group clients by `site`, compute avg wait days for those with a `firstAppointmentDate`. Join against `data.metadata.sites` so every site is represented even if it has no qualifying clients. Sort ascending by `avgDays` (nulls last).
+`avgWaitBySite`: computed from `filteredClients`. Group clients by `site`, compute avg wait days for those with a `firstAppointmentDate`. Join against `data.metadata.sites` so every site is represented even if it has no qualifying clients. Sort ascending by `avgDays` (nulls last). 
 
 ### `SiteWaitDrawer.vue` Structure
 
