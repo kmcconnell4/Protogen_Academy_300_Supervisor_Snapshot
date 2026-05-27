@@ -108,7 +108,7 @@
       v-model="drawerOpen"
       :title="drawerTitle"
       :icon="drawerIcon"
-      :clients="drawerClients"
+      :rows="drawerClients"
       :columns="drawerColumns"
     />
   </v-col>

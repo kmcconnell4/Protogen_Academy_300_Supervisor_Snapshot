@@ -87,22 +87,18 @@
       v-model="chartDrawerOpen"
       :title="chartDrawerTitle"
       :icon="chartDrawerIcon"
-      :clients="chartDrawerClients"
+      :rows="chartDrawerRows"
       :columns="chartDrawerColumns"
       accent-color="#6b297d"
       chip-color="primary"
     />
-    <!-- ── Site wait time drawer ─────────────────────────────────────────── -->
-    <SiteWaitDrawer
-      v-model="avgDaysDrawerOpen"
-      :sites="avgWaitBySite"
-    />  </v-container>
+  </v-container>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useDashboardData } from '@/composables/useDashboardData'
-import type { Client, DrawerColumn } from '@/types'
+import type { DrawerColumn } from '@/types'
 import DashboardHeader from '@/components/DashboardHeader.vue'
 import GlobalFilters from '@/components/GlobalFilters.vue'
 import ActionNeededRow from '@/components/ActionNeededRow.vue'
@@ -112,7 +108,6 @@ import PhillyNeighborhoodMap from '@/components/PhillyNeighborhoodMap.vue'
 import CareNeedsByNeighborhoodChart from '@/components/CareNeedsByNeighborhoodChart.vue'
 import SitesChart from '@/components/SitesChart.vue'
 import DetailDrawer from '@/components/DetailDrawer.vue'
-import SiteWaitDrawer from '@/components/SiteWaitDrawer.vue'
 
 const {
   data,
@@ -139,10 +134,9 @@ const {
 
 // ── Chart drill-down drawer state ─────────────────────────────────────────────
 const chartDrawerOpen = ref(false)
-const avgDaysDrawerOpen = ref(false)
 const chartDrawerTitle = ref('')
 const chartDrawerIcon = ref('mdi-chart-bar')
-const chartDrawerClients = ref<Client[]>([])
+const chartDrawerRows = ref<any[]>([])
 const chartDrawerColumns = ref<DrawerColumn[]>([])
 
 const TODAY = new Date('2026-04-14')
@@ -158,12 +152,12 @@ function formatDate(dateStr: string): string {
 function openChartDrawer(config: {
   title: string
   icon: string
-  clients: Client[]
+  rows: any[]
   columns: DrawerColumn[]
 }) {
   chartDrawerTitle.value = config.title
   chartDrawerIcon.value = config.icon
-  chartDrawerClients.value = config.clients
+  chartDrawerRows.value = config.rows
   chartDrawerColumns.value = config.columns
   chartDrawerOpen.value = true
 }
@@ -172,7 +166,7 @@ function onCaseworkerClick(caseworker: string) {
   openChartDrawer({
     title: `${caseworker}'s Caseload`,
     icon: 'mdi-account-group',
-    clients: filteredClients.value.filter(
+    rows: filteredClients.value.filter(
       (c) => c.clientStatus === 'active' && c.assignedCaseworker === caseworker,
     ),
     columns: [
@@ -197,7 +191,7 @@ function onSiteClick(site: string) {
   openChartDrawer({
     title: site,
     icon: 'mdi-hospital-building',
-    clients: filteredClients.value.filter((c) => c.site === site),
+    rows: filteredClients.value.filter((c) => c.site === site),
     columns: [
       { key: 'clientName', label: 'Client' },
       { key: 'assignedCaseworker', label: 'Caseworker' },
@@ -211,7 +205,7 @@ function onCareNeedsClick({ neighborhood, careType }: { neighborhood: string; ca
   openChartDrawer({
     title: `${careType} — ${neighborhood}`,
     icon: 'mdi-heart-pulse',
-    clients: filteredClients.value.filter(
+    rows: filteredClients.value.filter(
       (c) => c.neighborhood === neighborhood && c.careTypeNeeded === careType,
     ),
     columns: [
@@ -236,7 +230,7 @@ function onNeighborhoodClick(neighborhood: string) {
   openChartDrawer({
     title: `${neighborhood}`,
     icon: 'mdi-map-marker',
-    clients: filteredClients.value.filter((c) => c.neighborhood === neighborhood),
+    rows: filteredClients.value.filter((c) => c.neighborhood === neighborhood),
     columns: [
       { key: 'clientName', label: 'Client' },
       { key: 'assignedCaseworker', label: 'Caseworker' },
@@ -250,7 +244,7 @@ function onTotalActiveClick() {
   openChartDrawer({
     title: 'Total Individuals Actively Served',
     icon: 'mdi-account-group',
-    clients: activeClients.value,
+    rows: activeClients.value,
     columns: [
       { key: 'clientName', label: 'Client' },
       { key: 'assignedCaseworker', label: 'Caseworker' },
@@ -273,7 +267,7 @@ function onNewReferralsClick() {
   openChartDrawer({
     title: 'New Referrals This Month',
     icon: 'mdi-account-plus',
-    clients: newReferralsThisMonthClients.value,
+    rows: newReferralsThisMonthClients.value,
     columns: [
       { key: 'clientName', label: 'Client' },
       { key: 'assignedCaseworker', label: 'Caseworker' },
@@ -284,7 +278,27 @@ function onNewReferralsClick() {
 }
 
 function onAvgDaysClick() {
-  avgDaysDrawerOpen.value = true
+  openChartDrawer({
+    title: 'Wait Times by Site',
+    icon: 'mdi-clock-outline',
+    rows: avgWaitBySite.value,
+    columns: [
+      { key: 'name', label: 'Site' },
+      { key: 'address', label: 'Address' },
+      { key: 'neighborhood', label: 'Neighborhood' },
+      {
+        key: 'avgDays',
+        label: 'Avg Wait',
+        align: 'right',
+        badge: (row) => {
+          const days = row.avgDays as number | null
+          if (days === null) return null
+          const variant = days <= 7 ? 'success' : days <= 14 ? 'warning' : 'error'
+          return { text: `${days}d`, variant }
+        },
+      },
+    ],
+  })
 }
 </script>
 

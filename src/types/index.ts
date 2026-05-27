@@ -55,11 +55,11 @@ export interface Client {
 export type BadgeVariant = 'error' | 'warning' | 'success'
 
 export interface DrawerColumn {
-  key: keyof Client
+  key: string
   label: string
   align?: 'left' | 'right'
-  format?: (c: Client) => string
-  badge?: (c: Client) => { text: string; variant: BadgeVariant } | null
+  format?: (row: any) => string
+  badge?: (row: any) => { text: string; variant: BadgeVariant } | null
 }
 
 export interface SiteMetadata {

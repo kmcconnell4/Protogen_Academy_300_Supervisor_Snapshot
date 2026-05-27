@@ -19,7 +19,7 @@
           variant="tonal"
           :color="chipColor"
           aria-label="Count"
-        >{{ clients.length }}</v-chip>
+        >{{ rows.length }}</v-chip>
       </div>
       <v-btn
         icon
@@ -54,8 +54,8 @@
           </thead>
           <tbody>
             <tr
-              v-for="(c, i) in sortedClients"
-              :key="c.clientId"
+              v-for="(row, i) in pagedRows"
+              :key="String(row['clientId'] ?? i)"
               :class="{ 'row-alt': i % 2 === 1 }"
             >
               <td
@@ -66,34 +66,45 @@
                   col.key === 'clientName' ? 'fw-medium' : '',
                 ]"
               >
-                <template v-if="cellBadge(col, c) !== null && col.badge">
+                <template v-if="cellBadge(col, row) !== null && col.badge">
                   <span
                     class="days-badge"
-                    :class="`days-badge--${cellBadge(col, c)!.variant}`"
-                  >{{ cellBadge(col, c)!.text }}</span>
+                    :class="`days-badge--${cellBadge(col, row)!.variant}`"
+                  >{{ cellBadge(col, row)!.text }}</span>
                 </template>
-                <template v-else>{{ col.format ? col.format(c) : (c[col.key] ?? '—') }}</template>
+                <template v-else>{{ col.format ? col.format(row) : (row[col.key] ?? '—') }}</template>
               </td>
             </tr>
-            <tr v-if="clients.length === 0">
+            <tr v-if="rows.length === 0">
               <td :colspan="columns.length" class="no-data">No clients match this filter.</td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
+
+    <!-- ── Pagination ── -->
+    <div v-if="pageCount > 1" class="drawer-pagination">
+      <v-pagination
+        v-model="page"
+        :length="pageCount"
+        size="small"
+        density="compact"
+        aria-label="Results pagination"
+      />
+    </div>
   </v-navigation-drawer>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import type { Client, DrawerColumn } from '@/types'
+import type { DrawerColumn } from '@/types'
 
 const props = defineProps<{
   modelValue: boolean
   title: string
   icon: string
-  clients: Client[]
+  rows: any[]
   columns: DrawerColumn[]
   accentColor?: string
   chipColor?: string
@@ -104,15 +115,19 @@ defineEmits<{ 'update:modelValue': [value: boolean] }>()
 const accentColor = computed(() => props.accentColor ?? '#e53935')
 const chipColor = computed(() => props.chipColor ?? 'error')
 
-// ── Sorting ──────────────────────────────────────────────────────────────────
+const PAGE_SIZE = 10
+
+// ── Sorting ──────────────────────────────────────────────────────────────────────────────
 const sortKey = ref<string>('')
 const sortDir = ref<'asc' | 'desc'>('asc')
+const page = ref(1)
 
 watch(
-  () => props.clients,
+  () => props.rows,
   () => {
     sortKey.value = ''
     sortDir.value = 'asc'
+    page.value = 1
   },
 )
 
@@ -123,6 +138,7 @@ function setSort(key: string): void {
     sortKey.value = key
     sortDir.value = 'asc'
   }
+  page.value = 1
 }
 
 function sortIcon(key: string): string {
@@ -130,23 +146,35 @@ function sortIcon(key: string): string {
   return sortDir.value === 'asc' ? '↑' : '↓'
 }
 
-const sortedClients = computed(() => {
-  if (!sortKey.value) return props.clients
-  const k = sortKey.value as keyof Client
-  return [...props.clients].sort((a, b) => {
+const sortedRows = computed(() => {
+  if (!sortKey.value) return props.rows
+  const k = sortKey.value
+  return [...props.rows].sort((a, b) => {
     const va = a[k]
     const vb = b[k]
+    if (va == null && vb == null) return 0
+    if (va == null) return 1
+    if (vb == null) return -1
     let cmp = 0
     if (typeof va === 'string' && typeof vb === 'string') {
-      cmp = va < vb ? -1 : va > vb ? 1 : 0
+      cmp = va.localeCompare(vb)
+    } else if (typeof va === 'number' && typeof vb === 'number') {
+      cmp = va - vb
     }
     return sortDir.value === 'asc' ? cmp : -cmp
   })
 })
 
+const pageCount = computed(() => Math.ceil(props.rows.length / PAGE_SIZE))
+
+const pagedRows = computed(() => {
+  const start = (page.value - 1) * PAGE_SIZE
+  return sortedRows.value.slice(start, start + PAGE_SIZE)
+})
+
 // ── Cell rendering ────────────────────────────────────────────────────────────
-function cellBadge(col: DrawerColumn, c: Client) {
-  return col.badge ? col.badge(c) : null
+function cellBadge(col: DrawerColumn, row: any) {
+  return col.badge ? col.badge(row) : null
 }
 </script>
 
@@ -267,6 +295,13 @@ function cellBadge(col: DrawerColumn, c: Client) {
 
 .sortable-th:hover {
   opacity: 1 !important;
+}
+
+.drawer-pagination {
+  padding: 12px 20px;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: center;
 }
 
 .sort-icon {
