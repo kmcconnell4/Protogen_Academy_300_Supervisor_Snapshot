@@ -5,10 +5,6 @@
         <div class="chart-card__title">Active Caseload per Caseworker</div>
         <div class="chart-card__subtitle">Current active clients assigned to each caseworker</div>
       </div>
-      <div class="chart-card__legend">
-        <span class="legend-dot" style="background: #6b297d" aria-hidden="true" />
-        <span class="legend-text">Active Clients</span>
-      </div>
     </div>
     <div class="chart-wrap" style="height: 240px">
       <Bar
