@@ -48,7 +48,7 @@
           class="filter-pill"
           :class="{ 'filter-pill--active': isNeighborhoodFiltered }"
           v-bind="menuProps"
-          aria-label="`Filter by neighborhood. Currently: ${neighborhoodLabel}`"
+          :aria-label="`Filter by neighborhood. Currently: ${neighborhoodLabel}`"
           :aria-expanded="neighborhoodMenuOpen"
         >
           <v-icon size="13" class="pill-icon" aria-hidden="true">mdi-map-marker-outline</v-icon>
@@ -98,7 +98,7 @@
           class="filter-pill"
           :class="{ 'filter-pill--active': isCaseworkerFiltered }"
           v-bind="menuProps"
-          aria-label="`Filter by caseworker. Currently: ${caseworkerLabel}`"
+          :aria-label="`Filter by caseworker. Currently: ${caseworkerLabel}`"
           :aria-expanded="caseworkerMenuOpen"
         >
           <v-icon size="13" class="pill-icon" aria-hidden="true">mdi-account-outline</v-icon>
@@ -151,6 +151,16 @@
       Reset
     </button>
 
+    <button
+      class="filter-export"
+      @click="$emit('export')"
+      aria-label="Download currently filtered client data as CSV"
+      title="Download filtered data as CSV"
+    >
+      <v-icon size="14" class="mr-1" aria-hidden="true">mdi-download</v-icon>
+      Export CSV
+    </button>
+
   </div>
 </template>
 
@@ -169,6 +179,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   'update:filters': [value: DashboardFilters]
   reset: []
+  export: []
 }>()
 
 // ── Menu open state ──────────────────────────────────────────────────────────
@@ -371,6 +382,34 @@ const caseworkerLabel = computed(() => {
 .filter-reset:focus-visible {
   outline: none;
   box-shadow: 0 0 0 3px rgba(107, 41, 125, 0.3);
+}
+
+.filter-export {
+  display: inline-flex;
+  align-items: center;
+  margin-left: auto;
+  padding: 7px 13px;
+  background: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  font-family: inherit;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.filter-export:hover {
+  background: #6a0c7d;
+  border-color: #6a0c7d;
+}
+
+.filter-export:focus-visible {
+  outline: 3px solid rgba(107, 41, 125, 0.3);
+  outline-offset: 2px;
 }
 
 /* ── Active badge ───────────────────────────────────────────────────────── */

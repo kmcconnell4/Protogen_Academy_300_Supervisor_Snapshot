@@ -8,6 +8,7 @@
       v-model:filters="filters"
       :metadata="data.metadata"
       @reset="resetFilters"
+      @export="exportFilteredData"
     />
     <!-- ── Error state ──────────────────────────────────────────────── -->
     <div v-if="error" class="error-banner" role="alert" aria-live="assertive">
@@ -96,18 +97,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { defineAsyncComponent, ref } from 'vue'
 import { useDashboardData } from '@/composables/useDashboardData'
 import type { DrawerColumn } from '@/types'
+import { exportCsv } from '@/utils/exportCsv'
 import DashboardHeader from '@/components/DashboardHeader.vue'
 import GlobalFilters from '@/components/GlobalFilters.vue'
 import ActionNeededRow from '@/components/ActionNeededRow.vue'
 import SummaryRow from '@/components/SummaryRow.vue'
-import CaseloadChart from '@/components/CaseloadChart.vue'
-import PhillyNeighborhoodMap from '@/components/PhillyNeighborhoodMap.vue'
-import CareNeedsByNeighborhoodChart from '@/components/CareNeedsByNeighborhoodChart.vue'
-import SitesChart from '@/components/SitesChart.vue'
 import DetailDrawer from '@/components/DetailDrawer.vue'
+
+const CaseloadChart = defineAsyncComponent(() => import('@/components/CaseloadChart.vue'))
+const PhillyNeighborhoodMap = defineAsyncComponent(() => import('@/components/PhillyNeighborhoodMap.vue'))
+const CareNeedsByNeighborhoodChart = defineAsyncComponent(() => import('@/components/CareNeedsByNeighborhoodChart.vue'))
+const SitesChart = defineAsyncComponent(() => import('@/components/SitesChart.vue'))
 
 const {
   data,
@@ -139,7 +142,7 @@ const chartDrawerIcon = ref('mdi-chart-bar')
 const chartDrawerRows = ref<any[]>([])
 const chartDrawerColumns = ref<DrawerColumn[]>([])
 
-const TODAY = new Date('2026-04-14')
+const TODAY = new Date('2026-09-05')
 
 function daysSince(dateStr: string): number {
   return Math.floor((TODAY.getTime() - new Date(dateStr).getTime()) / 86_400_000)
@@ -147,6 +150,43 @@ function daysSince(dateStr: string): number {
 
 function formatDate(dateStr: string): string {
   return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(new Date(dateStr))
+}
+
+function exportFilteredData() {
+  const rows: string[][] = [
+    [
+      'Client ID',
+      'Client Name',
+      'Caseworker',
+      'Site',
+      'Neighborhood',
+      'Referral Source',
+      'Referral Date',
+      'First Appointment Date',
+      'Care Type Needed',
+      'Status',
+      'Last Contact Date',
+      'Medicaid Expiration Date',
+      'Provider Name',
+    ],
+    ...filteredClients.value.map((client) => [
+      client.clientId,
+      client.clientName,
+      client.assignedCaseworker,
+      client.site,
+      client.neighborhood,
+      client.referralSource,
+      client.referralDate,
+      client.firstAppointmentDate ?? '',
+      client.careTypeNeeded,
+      client.clientStatus,
+      client.lastContactDate,
+      client.medicaidExpirationDate,
+      client.providerName,
+    ]),
+  ]
+  const { start, end } = filters.value.dateRange
+  exportCsv(rows, `supervisor-snapshot_${start}_${end}.csv`)
 }
 
 function openChartDrawer(config: {

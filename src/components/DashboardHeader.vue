@@ -10,6 +10,10 @@
           <p class="header-subtitle">Philadelphia Community Mental Health</p>
         </div>
       </div>
+      <div class="header-meta" aria-label="Snapshot refresh time">
+        <span class="header-date-chip">September 5, 2026</span>
+        <span class="header-time-chip">Last refreshed 8:30 AM</span>
+      </div>
     </div>
   </header>
 </template>
@@ -75,6 +79,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  gap: 10px;
 }
 
 .header-date-chip,

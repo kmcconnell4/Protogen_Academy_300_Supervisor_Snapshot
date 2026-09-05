@@ -30,11 +30,16 @@
           :fill="feature.fill"
           stroke="#ffffff"
           stroke-width="0.5"
+          role="button"
+          tabindex="0"
+          :aria-label="`${feature.name}: ${feature.count} referrals. Open client list.`"
           class="map-polygon"
           :class="{ 'map-polygon--active': feature.count > 0 }"
           @mousemove="onMouseMove($event, feature)"
           @mouseleave="tooltip = null"
           @click="onNeighborhoodClick(feature)"
+          @keydown.enter="onNeighborhoodClick(feature)"
+          @keydown.space.prevent="onNeighborhoodClick(feature)"
         />
       </svg>
       <div

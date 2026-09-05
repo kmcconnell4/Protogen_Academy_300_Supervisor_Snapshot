@@ -14,11 +14,18 @@ export default defineConfig({
     },
   },
   build: {
+    chunkSizeWarningLimit: 700,
     rollupOptions: {
       output: {
-        manualChunks: {
-          vuetify: ['vuetify'],
-          vendor: ['vue', 'vue-router'],
+        manualChunks(id) {
+          if (id.includes('/src/data/philly-neighborhoods.json')) return 'map-data'
+          if (id.includes('/node_modules/vuetify/')) return 'vuetify'
+          if (
+            id.includes('/node_modules/chart.js/') ||
+            id.includes('/node_modules/vue-chartjs/') ||
+            id.includes('/node_modules/d3-geo/')
+          ) return 'charts'
+          if (id.includes('/node_modules/vue/')) return 'vendor'
         },
       },
     },

@@ -1,13 +1,25 @@
 <template>
   <v-app>
     <v-main class="bg-background">
-      <DashboardView />
+      <PasswordGate v-if="!authenticated" @authenticated="authenticated = true" />
+      <DashboardView v-else />
     </v-main>
   </v-app>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import DashboardView from '@/views/DashboardView.vue'
+import PasswordGate from '@/components/PasswordGate.vue'
+
+const STORAGE_KEY = 'supervisor-snapshot-access'
+
+const authenticated = ref(false)
+try {
+  authenticated.value = sessionStorage.getItem(STORAGE_KEY) === 'granted'
+} catch {
+  authenticated.value = false
+}
 </script>
 
 <style>

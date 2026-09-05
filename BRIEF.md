@@ -31,7 +31,7 @@ He has been my guinea pig for this project, and has thoughtfully provided some i
 - **Responsive:** Desktop + mobile friendly (mobile stacks vertically)
 - **Accessibility:** WCAG AA compliant
 - **Hosting:** Vercel
-- **Auth:** None required for prototype
+- **Auth:** Lightweight prototype password gate; no user accounts
 
 ---
 
@@ -158,6 +158,8 @@ All global filters affect every section on the dashboard, including the 🔴 Act
 | Date Range | Month/Year to Month/Year | Last 30 days |
 | Caseworker | Multi-select | All selected |
 | Reset/Clear Filters | Button | Resets all filters to defaults |
+
+The filter row also includes an `Export CSV` action that downloads all client records matching the current neighborhood, date range, and caseworker filters.
 
 ### 🔴 Action Needed Panels
 

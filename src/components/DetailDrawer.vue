@@ -46,9 +46,15 @@
                 scope="col"
                 class="sortable-th"
                 :class="{ 'text-right': col.align === 'right' }"
-                @click="setSort(String(col.key))"
               >
-                {{ col.label }} <span class="sort-icon">{{ sortIcon(String(col.key)) }}</span>
+                <button
+                  type="button"
+                  class="sort-button"
+                  :aria-label="`Sort by ${col.label}`"
+                  @click="setSort(String(col.key))"
+                >
+                  {{ col.label }} <span class="sort-icon" aria-hidden="true">{{ sortIcon(String(col.key)) }}</span>
+                </button>
               </th>
             </tr>
           </thead>
@@ -288,13 +294,30 @@ function cellBadge(col: DrawerColumn, row: any) {
 }
 
 .sortable-th {
+  padding: 0 !important;
+}
+
+.sort-button {
+  width: 100%;
+  padding: 9px 12px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
   cursor: pointer;
   user-select: none;
   transition: opacity 0.15s;
 }
 
-.sortable-th:hover {
+.sort-button:hover,
+.sort-button:focus-visible {
   opacity: 1 !important;
+}
+
+.sort-button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: -2px;
 }
 
 .drawer-pagination {

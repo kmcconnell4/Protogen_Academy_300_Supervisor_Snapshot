@@ -127,7 +127,7 @@ const props = defineProps<{
   priorMonthLabel: string
 }>()
 
-const TODAY = new Date('2026-04-14')
+const TODAY = new Date('2026-09-05')
 
 function daysSince(dateStr: string): number {
   return Math.floor((TODAY.getTime() - new Date(dateStr).getTime()) / 86_400_000)

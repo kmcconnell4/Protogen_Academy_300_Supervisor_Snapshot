@@ -36,7 +36,7 @@ try {
 }
 
 // ─── Default filter values ────────────────────────────────────────────────────
-const today = new Date('2026-04-13')
+const today = new Date('2026-09-05')
 
 function toYYYYMM(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
